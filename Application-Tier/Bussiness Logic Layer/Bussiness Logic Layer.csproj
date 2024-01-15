@@ -7,4 +7,9 @@
     <RootNamespace>Bussiness_Logic_Layer</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
