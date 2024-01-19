@@ -5,7 +5,6 @@
         public const string Photo = "Photo";
         public const string Gender = "Gender";
         public const string Position = "Position";
-
     }
     public class CompanyClaimTypes
     {

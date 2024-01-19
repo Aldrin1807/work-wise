@@ -27,19 +27,24 @@ namespace API_Layer
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString"))
             );
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                {
-                    ValidateActor = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]))
-
-                }
-              );
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+             .AddJwtBearer(options =>
+             {
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateIssuer = true,
+                     ValidateAudience = true,
+                     ValidateLifetime = true,
+                     ValidateIssuerSigningKey = true,
+                     ValidIssuer = builder.Configuration["Issuer"],
+                     ValidAudience = builder.Configuration["Audience"],
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SecretKey"]))
+                 };
+             });
             // In ConfigureServices method of Startup.cs in the API Layer
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
@@ -47,8 +52,8 @@ namespace API_Layer
 
 
             builder.Services.AddScoped<IAuthService,AuthService> ();
-            var serviceProvider = builder.Services.BuildServiceProvider();
-            var authService = serviceProvider.GetRequiredService<IAuthService>();
+            builder.Services.AddScoped<IUsersService, UsersService>();
+
 
 
             var app = builder.Build();

@@ -4,7 +4,11 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.IdentityModel.Tokens;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace Bussiness_Logic_Layer.Services
 {
@@ -13,20 +17,38 @@ namespace Bussiness_Logic_Layer.Services
         Task<string> Login(LoginDTO request);
         Task Register(RegisterUserDTO request);
         Task Register(RegisterCompanyDTO request);
-        Task<string> GenerateToken(User user);
+        string GenerateToken(User user, IList<string> roles);
     }
     public class AuthService:IAuthService
     {
-        private readonly AppDbContext _context;
         private readonly UserManager<User> _userManager;
-        public AuthService(AppDbContext context, UserManager<User> userManager)
+        private readonly IConfiguration _configuration;
+
+        public AuthService(UserManager<User> userManager,IConfiguration configuration)
         {
-            _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
-        public Task<string> Login(LoginDTO request)
+        public async Task<string> Login(LoginDTO request)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new Exception("Email does not exist");
+            }
+
+            if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var token = GenerateToken(user, roles);
+
+                return token;
+            }
+            else
+            {
+                throw new Exception("Invalid password");
+            }
+
         }
 
         public async Task Register(RegisterCompanyDTO request)
@@ -109,9 +131,29 @@ namespace Bussiness_Logic_Layer.Services
             await _userManager.AddClaimAsync(_user, new Claim(UserClaimTypes.Position, request.Position));
 
         }
-        public Task<string> GenerateToken(User user)
+        public string GenerateToken(User user, IList<string> roles)
         {
-            throw new NotImplementedException();
+
+            var claims = new[]
+            {
+                new Claim("Id", user.Id),
+                new Claim("Email", user.Email),
+                new Claim("Role", roles[0])
+            };
+
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.Now.AddHours(24), 
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

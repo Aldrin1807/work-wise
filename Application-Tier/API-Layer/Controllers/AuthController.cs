@@ -45,5 +45,21 @@ namespace API_Layer.Controllers
                 { Status = "Error", Message = ex.Message });
             }
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody]LoginDTO request)
+        {
+            try
+            {
+                var token = await _service.Login(request);
+                return Ok(new Response
+                { Status = "Success", Message = token });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
     }
 }

@@ -62,7 +62,7 @@ const SignupEmployer = () => {
         LastName: !(formData.LastName.length >= 3),
         CompanyName: !(formData.CompanyName.length >= 3),
         Email: !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.Email)),
-        Password: !(formData.Password.length >= 7 && formData.Password.length <= 20),
+        Password: !(formData.Password.length > 0),
         PhoneNumber: !(formData.PhoneNumber.length >= 7),
         Description: !(formData.Description.length > 0),
         Founded: !(formData.Founded.length > 0),

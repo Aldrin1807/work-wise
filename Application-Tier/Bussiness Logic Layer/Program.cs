@@ -25,6 +25,8 @@ namespace Bussiness_Logic_Layer
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<UsersService, UsersService>();
+
 
 
             var app = builder.Build();

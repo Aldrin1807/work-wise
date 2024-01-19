@@ -53,7 +53,7 @@ export default function Signup() {
     const firstNameValid = FirstLastNameRegex.test(formData.firstname);
     const lastNameValid = FirstLastNameRegex.test(formData.lastname);
     const emailValid = EmailRegex.test(formData.email);
-    const passwordValid = formData.password.length >= 8 && formData.password.length <= 20;
+    const passwordValid = formData.password.length > 0;
     const locationValid = formData.location.length >= 3;
     const photoValid = formData.photo !== null;
     const phoneNumberValid = formData.phonenumber.length >= 7;
