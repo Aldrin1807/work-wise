@@ -23,6 +23,7 @@ import HelpcenterSupport from "./pages/helpcenter-support";
 
 import Login from "./pages/login";
 import Signup from "./pages/signup";
+import SignupEmployer from "./pages/signup-employer";
 import ResetPassword from "./pages/reset-password";
 import Terms from "./pages/terms";
 import Privacy from "./pages/privacy";
@@ -58,6 +59,7 @@ function App() {
       <Route path='/helpcenter-support' element={<HelpcenterSupport/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/signup' element={<Signup/>}/>
+      <Route path='/signup-employer' element={<SignupEmployer/>}/>
       <Route path='/reset-password' element={<ResetPassword/>}/>
       <Route path='/terms' element={<Terms/>}/>
       <Route path='/privacy' element={<Privacy/>}/>

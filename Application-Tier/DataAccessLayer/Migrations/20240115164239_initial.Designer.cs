@@ -13,12 +13,11 @@ namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20240115164239_initial")]
-    partial class initial
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
@@ -445,7 +444,6 @@ namespace DataAccessLayer.Migrations
 
                     b.Navigation("Roles");
                 });
-#pragma warning restore 612, 618
         }
     }
 }
