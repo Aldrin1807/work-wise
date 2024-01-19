@@ -13,7 +13,6 @@ import { clearUser } from "../redux/userSlice";
 export default function Navbar({navClass, navLight}: {navClass: string, navLight: boolean}){
     const dispatch = useDispatch();
 
-    let [isOpen, setMenu] = useState(true);
     let [search, setSearch] = useState(false);
     let [cartitem, setCartitem] = useState(false);
 
@@ -45,9 +44,7 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
         };
 
     }, []);
-    const toggleMenu = () => {
-        setMenu(!isOpen);
-    }
+
 
     const handleDropdownItemClick = (event:any) => {
         const targetPath = event.target.getAttribute('data-path');
