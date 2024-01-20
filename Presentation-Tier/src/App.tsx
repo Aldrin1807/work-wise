@@ -40,8 +40,6 @@ function App() {
     { path: '/job-detail/:id', element: <JobDetail /> },
     { path: '/employers', element: <Employers /> },
     { path: '/error', element: <Error /> },
-    { path: '/employer-profile/:id', element: <EmployerProfile /> },
-    { path: '/candidate-profile/:id', element: <CandidateProfile /> },
     { path: '/aboutus', element: <AboutUs /> },
     { path: '/login', element: <Login /> },
     { path: '/signup', element: <Signup /> },
@@ -53,13 +51,15 @@ function App() {
   ];
 
   const userRoutes = [
-    ...commonRoutes,
-    { path: '/candidate-profile-setting', element: <CandidateProfileSetting /> },
+    ...commonRoutes,    
+    { path: '/employer-profile/:id', element: <EmployerProfile /> },
+    { path: '/candidate-profile/:id', element: <CandidateProfile /> },
   ];
 
   const employerRoutes = [
     ...commonRoutes,
     { path: '/candidates', element: <Candidates /> },
+    { path: '/employer-profile/:id', element: <EmployerProfile /> },
     { path: '/job-post', element: <JobPost /> },
   ];
 

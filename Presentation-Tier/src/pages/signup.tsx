@@ -16,7 +16,8 @@ export default function Signup() {
     gender: '',
     photo: null,
     location: '',
-    position: ''
+    position: '',
+    dateOfBirth: '', // Initialize dateOfBirth as an empty string
   });
 
   const [errors, setErrors] = useState({
@@ -28,23 +29,23 @@ export default function Signup() {
     gender: false,
     location: false,
     photo: false,
-    position: false
+    position: false,
+    dateOfBirth: false,
   });
 
   const onChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  
 
-  const handleFileChange = (event:any) => {
+  const handleFileChange = (event: any) => {
     setFormData({
       ...formData,
       photo: event.target.files[0],
     });
   };
 
-  const handleFormSubmit = async (e:any) => {
+  const handleFormSubmit = async (e: any) => {
     e.preventDefault();
 
     const FirstLastNameRegex = /^[a-zA-Z]{3,}$/;
@@ -59,55 +60,56 @@ export default function Signup() {
     const phoneNumberValid = formData.phonenumber.length >= 7;
     const genderValid = formData.gender.length > 0;
     const positionValid = formData.position.length > 0;
-
+    const dateOfBirthValid = formData.dateOfBirth !== '';
 
     setErrors({
-        firstname: !firstNameValid,
-        lastname: !lastNameValid,
-        email: !emailValid,
-        password: !passwordValid,
-        location: !locationValid,
-        photo: !photoValid,
-        phonenumber: !phoneNumberValid,
-        gender: !genderValid,
-        position: !positionValid
-      });
-    
-      console.log(errors);
-    
-      if (
-        firstNameValid &&
-        lastNameValid &&
-        emailValid &&
-        passwordValid &&
-        locationValid &&
-        photoValid &&
-        phoneNumberValid &&
-        genderValid
-      ) {
-        console.log("formValid");
-        const form = new FormData();
-        form.append("firstname", formData.firstname);
-        form.append("lastname", formData.lastname);
-        form.append("email", formData.email);
-        form.append("password", formData.password);
-        form.append("phonenumber", formData.phonenumber);
-        form.append("location",formData.location);
-        form.append("position",formData.position);
-        if (formData.photo) {
-            form.append("photo", formData.photo);
-        }
-        form.append("gender",formData.gender);
-        
+      firstname: !firstNameValid,
+      lastname: !lastNameValid,
+      email: !emailValid,
+      password: !passwordValid,
+      location: !locationValid,
+      photo: !photoValid,
+      phonenumber: !phoneNumberValid,
+      gender: !genderValid,
+      position: !positionValid,
+      dateOfBirth: !dateOfBirthValid,
+    });
 
-       const response = await Registration(form);
-        if(response){
-            navigate('/login');
-        }
+    if (
+      firstNameValid &&
+      lastNameValid &&
+      emailValid &&
+      passwordValid &&
+      locationValid &&
+      photoValid &&
+      phoneNumberValid &&
+      genderValid &&
+      dateOfBirthValid
+    ) {
+      const form = new FormData();
+      form.append("firstname", formData.firstname);
+      form.append("lastname", formData.lastname);
+      form.append("email", formData.email);
+      form.append("password", formData.password);
+      form.append("phonenumber", formData.phonenumber);
+      form.append("location", formData.location);
+      form.append("position", formData.position);
+      if (formData.photo) {
+        form.append("photo", formData.photo);
       }
-    };
+      form.append("gender", formData.gender);
+      form.append("dateOfBirth", formData.dateOfBirth);
+
+      const response = await Registration(form);
+      if (response) {
+        navigate('/login');
+      }
+    }
+  };
+
   const country_list = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cruise Ship","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyz Republic","Kosova","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Namibia","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Satellite","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","St. Lucia","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
 
+  
   return (
     <section className="bg-home d-flex align-items-center" style={{ backgroundImage: `url(${bg1})`, backgroundPosition: 'center' }}>
       <div className="bg-overlay bg-linear-gradient-2"></div>
@@ -119,18 +121,18 @@ export default function Signup() {
                 <Link to="/"><img src={logo} className="mb-4 d-block mx-auto" alt="" /></Link>
                 <h6 className="mb-3 text-uppercase fw-semibold">Register your account</h6>
                 <div className="row g-3">
-                    <div className="col-md-6">
-                      <label className="form-label fw-semibold">Your First Name</label>
-                      <input name="firstname" id="firstname" type="text" className={`form-control ${errors.firstname ? 'is-invalid' : ''}`} value={formData.firstname} onChange={onChange} />
-                      {errors.firstname && <div className="invalid-feedback">Invalid first name</div>}
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label fw-semibold">Your Last Name</label>
-                      <input name="lastname" id="lastname" type="text" className={`form-control ${errors.lastname ? 'is-invalid' : ''}`} value={formData.lastname} onChange={onChange} />
-                      {errors.lastname && <div className="invalid-feedback">Invalid last name</div>}
-                    </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold">Your First Name</label>
+                    <input name="firstname" id="firstname" type="text" className={`form-control ${errors.firstname ? 'is-invalid' : ''}`} value={formData.firstname} onChange={onChange} />
+                    {errors.firstname && <div className="invalid-feedback">Invalid first name</div>}
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold">Your Last Name</label>
+                    <input name="lastname" id="lastname" type="text" className={`form-control ${errors.lastname ? 'is-invalid' : ''}`} value={formData.lastname} onChange={onChange} />
+                    {errors.lastname && <div className="invalid-feedback">Invalid last name</div>}
+                  </div>
                 </div>
-                
+
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Your Email</label>
                   <input name="email" id="email" type="email" className={`form-control ${errors.email ? 'is-invalid' : ''}`} value={formData.email} onChange={onChange} />
@@ -159,19 +161,19 @@ export default function Signup() {
                     <input name="phonenumber" id="phonenumber" type="tel" className={`form-control ${errors.phonenumber ? 'is-invalid' : ''}`} value={formData.phonenumber} onChange={onChange} />
                     {errors.phonenumber && <div className="invalid-feedback">Invalid phone number</div>}
                   </div>
-                      <div className="col-md-6">
-                      <label className="form-label fw-semibold">Your gender</label>
-                      <select name="gender" id="gender" className={`form-select ${errors.gender ? 'is-invalid' : ''}`} value={formData.gender} onChange={onChange}>
-                        <option value="" disabled>Select your gender</option>
-                        {["Male","Female"].map((gender, index) => (
-                          <option key={index} value={gender}>{gender}</option>
-                        ))}
-                      </select>
-                      {errors.gender && <div className="invalid-feedback">Please select your gender</div>}
-                    </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold">Your gender</label>
+                    <select name="gender" id="gender" className={`form-select ${errors.gender ? 'is-invalid' : ''}`} value={formData.gender} onChange={onChange}>
+                      <option value="" disabled>Select your gender</option>
+                      {["Male", "Female"].map((gender, index) => (
+                        <option key={index} value={gender}>{gender}</option>
+                      ))}
+                    </select>
+                    {errors.gender && <div className="invalid-feedback">Please select your gender</div>}
+                  </div>
                 </div>
-                
-                
+
+
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Your Location</label>
                   <select name="location" id="location" className={`form-select ${errors.location ? 'is-invalid' : ''}`} value={formData.location} onChange={onChange}>
@@ -182,7 +184,7 @@ export default function Signup() {
                   </select>
                   {errors.location && <div className="invalid-feedback">Please select your location</div>}
                 </div>
-                
+
                 <div className="mb-3">
                   <label
                     htmlFor="fileInput"
@@ -207,6 +209,17 @@ export default function Signup() {
                   {errors.photo && <div className="invalid-feedback">Please upload a photo</div>}
                 </div>
                 <div className="mb-3">
+                  <label className="form-label fw-semibold">Your Date of Birth</label>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    className={`form-control ${errors.dateOfBirth ? 'is-invalid' : ''}`}
+                    value={formData.dateOfBirth}
+                    onChange={onChange}
+                  />
+                  {errors.dateOfBirth && <div className="invalid-feedback">Please select your date of birth</div>}
+                </div>
+                <div className="mb-3">
                   <span><span className="text-muted small me-2">Are you an Employer? </span> <Link to="/signup-employer" className="text-dark fw-semibold small">Sign up as an Employer</Link></span>
                 </div>
                 <button className="btn btn-primary w-100" type="submit" onClick={handleFormSubmit}>Register</button>
@@ -222,3 +235,4 @@ export default function Signup() {
     </section>
   );
 }
+

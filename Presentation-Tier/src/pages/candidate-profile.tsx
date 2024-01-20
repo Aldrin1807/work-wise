@@ -86,7 +86,7 @@ export default function CandidateProfile(){
 
             <div className="container mt-4">
                 <div className="row g-4">
-                    {user.introduction==''?(
+                    {user.introduction == ''?(
                         <div className="col-lg-8 col-md-7 col-12">
                             <p className="text-center">Add additional data by clicking the edit icon above</p>
                         </div>
@@ -118,9 +118,9 @@ export default function CandidateProfile(){
                             {userData.experiences.map((experience: { companyName: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; dateFrom: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; dateTo: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; position: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; description: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }, index: Key | null | undefined) => (
                                 <div key={index} className="experience-item d-flex flex-column p-3 border">
                                     <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 className="mb-0">{experience.companyName} : <span className='h6'>{experience.dateFrom} to {experience.dateTo}</span></h5>
+                                    <h5 className="mb-0">{experience.position} : <span className='h6'>{experience.companyName}</span></h5>
                                     </div>
-                                    <h6 className="mb-0">{experience.position}</h6>
+                                    <h6 className="mb-0">{experience.dateFrom} to {experience.dateTo}</h6>
                                     <p className="mb-0">{experience.description}</p>
                                 </div>
                                 ))}
