@@ -61,11 +61,11 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
 
     const user = useSelector((state:any) => state.user);
     const [userData,setUserData] = useState({
-        firstname: '',
-        lastname: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
-        phonenumber: '',
+        phoneNumber: '',
         gender: '',
         photo: null,
         location: '',
@@ -104,7 +104,7 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
             }
 
             <ul className="buy-button list-inline mb-0">
-                {(user.token==null)?(
+                {(!user.isAuthenticated)?(
                     <li className="list-inline-item ps-1 mb-0">
                     <Link to="/login">Sign in</Link>
                     </li>)
@@ -133,7 +133,7 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                                         </button>
                                         <div style={{ display: cartitem === true ? 'block' : 'none' }}>
                                             <div className={`dropdown-menu dd-menu dropdown-menu-end bg-white rounded shadow border-0 mt-3 show`}>
-                                                <Link to="/candidate-profile/1" className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
+                                                <Link to={`${user.Role=="Employer"?`/employer-profile/${user.userId}`:`/candidate-profile/${user.userId}`}`} className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
                                                     <FiUser className="fea icon-sm me-2 align-middle" />Profile
                                                 </Link>
                                                 <Link to="/candidate-profile-setting/1" className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>

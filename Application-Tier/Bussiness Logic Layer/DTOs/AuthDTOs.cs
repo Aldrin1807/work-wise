@@ -11,6 +11,7 @@
         public string Gender { get; set; }
         public IFormFile Photo { get; set; }
         public string Location { get; set; }
+        public string DateOfBirth { get; set; }
     }
     public class RegisterCompanyDTO
     {

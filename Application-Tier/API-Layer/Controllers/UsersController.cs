@@ -31,5 +31,20 @@ namespace API_Layer.Controllers
             }
         }
 
+        [HttpPut("update-additional-info")]
+        public async Task<IActionResult> UpdateAditionalInfo([FromBody] AdditionalDataDTO request)
+        {
+            try
+            {
+                await _service.SaveAdditionalData(request);
+                return Ok(new Response
+                { Status = "Success", Message = "Additional data saved succesfully" });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
     }
 }

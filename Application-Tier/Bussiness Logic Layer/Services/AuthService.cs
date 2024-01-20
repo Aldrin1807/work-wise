@@ -108,7 +108,7 @@ namespace Bussiness_Logic_Layer.Services
                 UserName = request.FirstName + request.LastName + Guid.NewGuid().ToString().Substring(0, 5),
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
-                Location = request.Location
+                Location = request.Location,
             };
 
             var result = await _userManager.CreateAsync(_user, request.Password);
@@ -129,6 +129,7 @@ namespace Bussiness_Logic_Layer.Services
             await _userManager.AddClaimAsync(_user,new Claim(UserClaimTypes.Photo, Convert.ToBase64String(photoBytes)));
             await _userManager.AddClaimAsync(_user, new Claim(UserClaimTypes.Gender, request.Gender));
             await _userManager.AddClaimAsync(_user, new Claim(UserClaimTypes.Position, request.Position));
+            await _userManager.AddClaimAsync(_user, new Claim(UserClaimTypes.DateOfBirth, request.DateOfBirth));
 
         }
         public string GenerateToken(User user, IList<string> roles)

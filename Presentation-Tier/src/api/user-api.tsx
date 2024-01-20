@@ -43,6 +43,7 @@ export const LoginUser = async (credentials: object) => {
       console.log(decodedToken);
       // Save the claims to Redux using the login action
       store.dispatch(setUser({  // Dispatch the setUser action from userSlice
+        isAuthenticated: true,
         token,
         userId: decodedToken["Id"],
         role: decodedToken["Role"],
@@ -73,3 +74,26 @@ export const fetchUser = async (token: string,id :string) => {
       console.error(error);
     }
 };
+
+export const saveAdditionalData = async (token: string, data: object) => {
+  try {
+    const response = await axios.put(`${API_URL}Users/update-additional-info/`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    if (response.data.status === "Success") {
+        await swal(
+        "Successfully updated!",
+        response.data.message,
+        "success"
+        );
+        return true
+    }
+    return false;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}

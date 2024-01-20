@@ -1,4 +1,6 @@
-﻿namespace Bussiness_Logic_Layer.DTOs
+﻿using DataAccessLayer.Models;
+
+namespace Bussiness_Logic_Layer.DTOs
 {
     public class UsersDTO
     {
@@ -10,5 +12,9 @@
         public string Photo { get; set; }
         public string Location { get; set; }
         public string Position { get; set; }
+        public string DateOfBirth { get; set; }
+        public string Introduction { get; set; }
+        public string Skills { get; set; }
+        public List<UserExperience> Experiences { get; set; }
     }
 }

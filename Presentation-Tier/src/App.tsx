@@ -5,6 +5,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
 import "./assets/scss/style.scss"
 import "./assets/css/materialdesignicons.min.css"
 
+
 import Home from "./pages/home";
 import JobCategories from "./pages/job-categories";
 import JobList from "./pages/job-list";
