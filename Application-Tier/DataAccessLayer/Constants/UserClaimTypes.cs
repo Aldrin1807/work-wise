@@ -16,6 +16,7 @@
         public const string Founder = "Founder";
         public const string NoEmployees = "NoEmployees";
         public const string Website = "Website";
+        public const string Description = "Description";
     }
 }
 

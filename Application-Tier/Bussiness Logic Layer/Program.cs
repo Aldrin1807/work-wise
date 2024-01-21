@@ -26,6 +26,7 @@ namespace Bussiness_Logic_Layer
             .AddDefaultTokenProviders();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<UsersService, UsersService>();
+            builder.Services.AddScoped<IEmployerService, EmployerService>();
 
 
 

@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { fetchUser } from "../api/user-api";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../redux/userSlice";
+import { FaCheck, FaLinesLeaning } from "react-icons/fa6";
 
 export default function Navbar({navClass, navLight}: {navClass: string, navLight: boolean}){
     const dispatch = useDispatch();
@@ -109,7 +110,6 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                     <Link to="/login">Sign in</Link>
                     </li>)
                     :
-                    
                 <><li className="list-inline-item ps-1 mb-0">
                                 <div className="dropdown">
                                     <button type="button" onClick={() => setSearch(!search)} className="dropdown-toggle btn btn-sm btn-icon btn-pills btn-primary">
@@ -133,12 +133,19 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                                         </button>
                                         <div style={{ display: cartitem === true ? 'block' : 'none' }}>
                                             <div className={`dropdown-menu dd-menu dropdown-menu-end bg-white rounded shadow border-0 mt-3 show`}>
-                                                <Link to={`${user.Role=="Employer"?`/employer-profile/${user.userId}`:`/candidate-profile/${user.userId}`}`} className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
+                                                <Link to={`${user.role==="Employer"?`/employer-profile/${user.userId}`:`/candidate-profile/${user.userId}`}`} className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
                                                     <FiUser className="fea icon-sm me-2 align-middle" />Profile
                                                 </Link>
-                                                <Link to="/candidate-profile-setting/1" className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
-                                                    <FiSettings className="fea icon-sm me-2 align-middle" />Settings
-                                                </Link>
+                                                {user.role==="Employer"?(
+                                                    <Link to="/candidate-profile-setting/1" className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
+                                                        <FaLinesLeaning   className="fea icon-sm me-2 align-middle" />Posted Jobs
+                                                    </Link>
+                                                ):(
+                                                    <Link to="/candidate-profile-setting/1" className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
+                                                        <FaCheck  className="fea icon-sm me-2 align-middle" />Applied Jobs
+                                                    </Link>
+                                                )}
+                                                
                                                 <div className="dropdown-divider border-top"></div>
                                                 <Link to="/login" className="dropdown-item fw-medium fs-6" onClick={LogOut}>
                                                     <FiLogOut className="fea icon-sm me-2 align-middle" />Logout

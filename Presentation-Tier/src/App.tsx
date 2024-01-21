@@ -79,15 +79,6 @@ function App() {
         <Route key={index} {...route} />
       ))}
       {/* 404 Error Handling */}
-      <Route
-        path="*"
-        element={
-          <Navigate
-            to="/error"
-            state={{ error: 'Page not found!' }}
-          />
-        }
-      />
     </Routes>
   );
 }

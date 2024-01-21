@@ -91,6 +91,7 @@ namespace Bussiness_Logic_Layer.Services
             await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Founder, request.Founder));
             await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.NoEmployees, request.NoEmployees));
             await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Website, request.Website));
+            await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Description, request.Description));
 
 
         }

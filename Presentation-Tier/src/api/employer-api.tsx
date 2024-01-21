@@ -24,3 +24,17 @@ export const Registration = async (form:FormData) => {
       return false;
     }
 };
+
+export const fetchEmployer = async (token: string,id :string) => {
+  try {
+    const response = await axios.get(`${API_URL}Employer/get-employer/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+      console.log(response.data);
+      return response.data;
+    }catch (error) {
+      console.error(error);
+    }
+};
