@@ -4,24 +4,27 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Bussiness_Logic_Layer.Services
 {
     public interface IEmployerService
     {
         Task<EmployerDTO> GetEmployer(string id);
+        Task PostJob(JobDTO request);
     }
     public class EmployerService:IEmployerService
     {
         private readonly UserManager<User> _userManager;
         private readonly AppDbContext _context;
-        public EmployerService(UserManager<User> userManager, AppDbContext context)
+        private readonly IIdentityService _identity;
+        public EmployerService(UserManager<User> userManager, AppDbContext context,IIdentityService identity)
         {
             _userManager = userManager;
             _context = context;
+            _identity = identity;
         }
 
+        #region Employer Data
         public async Task<EmployerDTO> GetEmployer(string id)
         {
             if (id == null)
@@ -29,7 +32,7 @@ namespace Bussiness_Logic_Layer.Services
                 throw new Exception("Id is empty");
             }
 
-            var user = await GetUserById(id);
+            var user = await _identity.GetUserById(id);
             var claims = await _userManager.GetClaimsAsync(user);
 
             var _employer = new EmployerDTO
@@ -38,14 +41,14 @@ namespace Bussiness_Logic_Layer.Services
                 LastName = user.LastName,
                 Email = user.Email,
                 CompanyName = user.UserName,
-                Founded = GetEmployerClaimValue(claims, CompanyClaimTypes.Founded),
-                Founder = GetEmployerClaimValue(claims, CompanyClaimTypes.Founder),
-                Description = GetEmployerClaimValue(claims, CompanyClaimTypes.Description),
+                Founded = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Founded),
+                Founder = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Founder),
+                Description = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Description),
                 Location = user.Location,
-                NoEmployees = GetEmployerClaimValue(claims,CompanyClaimTypes.NoEmployees),
+                NoEmployees = _identity.GetUserClaimValue(claims,CompanyClaimTypes.NoEmployees),
                 PhoneNumber = user.PhoneNumber,
-                Photo = GetEmployerClaimValue(claims, CompanyClaimTypes.Photo),
-                Website = GetEmployerClaimValue(claims, CompanyClaimTypes.Website)
+                Photo = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Photo),
+                Website = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Website)
             };
 
             var _jobs = await _context.Jobs.Where(j => j.CompanyId == id).ToListAsync();
@@ -57,22 +60,33 @@ namespace Bussiness_Logic_Layer.Services
             return _employer;
         }
 
-        private string GetEmployerClaimValue(IEnumerable<Claim> claims, string claimType)
-        {
-            var claim = claims.FirstOrDefault(c => c.Type == claimType);
-            return claim?.Value ?? string.Empty;
-        }
+        #endregion
 
-
-        private async Task<User> GetUserById(string id)
+        #region Job Data
+        public async Task PostJob(JobDTO request)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            if(request == null)
             {
-                throw new Exception("User does not exist");
+                throw new Exception("Request is empty");
             }
-
-            return user;
+            var _job = new Job
+            {
+                JobTitle = request.JobTitle,
+                JobDescription = request.JobDescription,
+                Category = request.Category,
+                CompanyId = request.CompanyId,
+                DateTime = DateTime.UtcNow.ToShortDateString(),
+                Experience = request.Experience,
+                Skills = request.Skills,
+                Salary = request.Salary,
+                Industry = request.Industry,
+                Location = request.Location,
+                Qualification = request.Qualification,
+                Spots = request.Spots
+            };
+            await _context.Jobs.AddAsync(_job);
+            await _context.SaveChangesAsync();
         }
+        #endregion
     }
 }

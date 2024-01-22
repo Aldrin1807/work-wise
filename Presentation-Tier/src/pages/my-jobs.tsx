@@ -4,12 +4,10 @@ import bg1 from '../assets/images/hero/bg.jpg'
 
 import Navbar from "../components/navbar";
 import AboutTwo from "../components/aboutTwo";
-import FormSelect from "../components/formSelect";
 import Footer from "../components/footer";
 import ScrollTop from "../components/scrollTop";
 
 import { jobData } from "../data/data";
-import {FiBookmark, FiArrowUpRight} from "../assets/icons/vander"
 import { CiTrash } from "react-icons/ci";
 
 

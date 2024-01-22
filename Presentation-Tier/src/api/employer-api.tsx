@@ -38,3 +38,29 @@ export const fetchEmployer = async (token: string,id :string) => {
       console.error(error);
     }
 };
+
+export const postJob = async (form: any, token: string) => {
+  try {
+      const response = await axios.post(`${API_URL}Employer/post-job`, form,{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log(response.data);
+
+      if (response.data.status === "Success") {
+          await swal(
+          "Job posted succesfully!",
+          response.data.message,
+          "success"
+          );
+      return true
+    }else{
+      await swal("Registration Failed", response.data.message, "error");
+      return false;
+    }
+  }catch (error) {
+    console.error(error);
+    return false;
+  }
+};

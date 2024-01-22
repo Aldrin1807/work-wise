@@ -17,10 +17,12 @@ namespace Bussiness_Logic_Layer.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly AppDbContext _context;
-        public UsersService(UserManager<User> userManager,AppDbContext context)
+        private readonly IIdentityService _identity;
+        public UsersService(UserManager<User> userManager,AppDbContext context,IIdentityService identity)
         {
             _userManager = userManager;
             _context = context;
+            _identity = identity;
         }
         public async Task<UsersDTO> GetUser(string id)
         {
@@ -29,7 +31,7 @@ namespace Bussiness_Logic_Layer.Services
                 throw new Exception("Id is empty");
             }
 
-            var user = await GetUserById(id);
+            var user = await _identity.GetUserById(id);
             var userClaims = await _userManager.GetClaimsAsync(user);
 
             var _user = new UsersDTO
@@ -38,13 +40,13 @@ namespace Bussiness_Logic_Layer.Services
                 LastName = user.LastName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                Gender = GetUserClaimValue(userClaims, UserClaimTypes.Gender),
-                Photo = GetUserClaimValue(userClaims, UserClaimTypes.Photo),
+                Gender = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Gender),
+                Photo = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Photo),
                 Location = user.Location,
-                Position = GetUserClaimValue(userClaims, UserClaimTypes.Position),
-                DateOfBirth = GetUserClaimValue(userClaims, UserClaimTypes.DateOfBirth),
-                Introduction = GetUserClaimValue(userClaims,UserClaimTypes.Introduction),
-                Skills = GetUserClaimValue(userClaims,UserClaimTypes.Skills)
+                Position = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Position),
+                DateOfBirth = _identity.GetUserClaimValue(userClaims, UserClaimTypes.DateOfBirth),
+                Introduction = _identity.GetUserClaimValue(userClaims,UserClaimTypes.Introduction),
+                Skills = _identity.GetUserClaimValue(userClaims,UserClaimTypes.Skills)
             };
             var _experiences = await _context.UserExperiences.Where(u => u.UserId == id).ToListAsync();
             _user.Experiences = _experiences;
@@ -52,31 +54,13 @@ namespace Bussiness_Logic_Layer.Services
             return _user;
         }
 
-        private async Task<User> GetUserById(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                throw new Exception("User does not exist");
-            }
-
-            return user;
-        }
-
-        private string GetUserClaimValue(IEnumerable<Claim> claims, string claimType)
-        {
-            var claim = claims.FirstOrDefault(c => c.Type == claimType);
-            return claim?.Value ?? string.Empty;
-        }
-    
-
         public async Task SaveAdditionalData(AdditionalDataDTO request)
         {
-            var user = await GetUserById(request.UserId);
+            var user = await _identity.GetUserById(request.UserId);
             var userClaims = await _userManager.GetClaimsAsync(user);
 
-            var introClaim = GetUserClaimValue(userClaims, UserClaimTypes.Introduction);
-            var skillsClaim = GetUserClaimValue(userClaims, UserClaimTypes.Skills);
+            var introClaim = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Introduction);
+            var skillsClaim = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Skills);
 
             
             if(!string.IsNullOrEmpty(introClaim))

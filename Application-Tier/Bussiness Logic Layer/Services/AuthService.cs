@@ -23,7 +23,6 @@ namespace Bussiness_Logic_Layer.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-
         public AuthService(UserManager<User> userManager,IConfiguration configuration)
         {
             _userManager = userManager;
