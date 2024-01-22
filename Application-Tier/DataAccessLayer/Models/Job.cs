@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DataAccessLayer.Models
 {
@@ -12,7 +13,7 @@ namespace DataAccessLayer.Models
         public string Skills { get; set; } //Skills are gonna be saved by seperating them with comma, for example php,js,html 
         public string Location { get; set; }
         public string Qualification { get; set; }
-        public string Industry { get; set; }
+        public string Type { get; set; }
         public int Spots { get; set; }
         public string DateTime { get; set; }
         public string Category { get; set; }
@@ -20,8 +21,16 @@ namespace DataAccessLayer.Models
         [JsonIgnore]
         public User Company { get; set; }
 
-
         public List<JobApplication> Applications { get; set; }
+
+        [NotMapped]
+        public string? CompanyName { get; set; }
+
+        [NotMapped]
+        public string? CompanyLocation { get; set; }
+
+        [NotMapped]
+        public string? CompanyPhoto { get; set; }
 
     }
 }

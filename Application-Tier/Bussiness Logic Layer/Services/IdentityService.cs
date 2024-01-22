@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Data;
+﻿using DataAccessLayer.Constants;
+using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
@@ -9,6 +10,7 @@ namespace Bussiness_Logic_Layer.Services
     {
         Task<User> GetUserById(string id);
         string GetUserClaimValue(IEnumerable<Claim> claims, string claimType);
+        Task<string> GetUserPhoto(User user);
     }
     public class IdentityService:IIdentityService
     {
@@ -33,6 +35,11 @@ namespace Bussiness_Logic_Layer.Services
         {
             var claim = claims.FirstOrDefault(c => c.Type == claimType);
             return claim?.Value ?? string.Empty;
+        }
+        public async Task<string> GetUserPhoto(User user)
+        {
+            var claims = await _userManager.GetClaimsAsync(user);
+            return claims.FirstOrDefault(c => c.Type == UserClaimTypes.Photo).Value;
         }
     }
 }

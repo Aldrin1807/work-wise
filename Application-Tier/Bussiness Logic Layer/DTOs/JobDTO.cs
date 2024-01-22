@@ -9,7 +9,7 @@
         public string Skills { get; set; } 
         public string Location { get; set; }
         public string Qualification { get; set; }
-        public string Industry { get; set; }
+        public string Type { get; set; }
         public int Spots { get; set; }
         public string Category { get; set; }
         public string CompanyId { get; set; }

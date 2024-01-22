@@ -84,7 +84,7 @@ export default function MyJobs(){
                             <div className="job-post job-type-three rounded shadow bg-white p-4">
                                 
                                 <div className="mt-2">
-                                    <Link to={`/job-detail-three/${item.id}`} className="text-dark title h5">{item.jobTitle}</Link>
+                                    <Link to={`/job-detail/${item.id}`} className="text-dark title h5">{item.jobTitle}</Link>
                                     <p className="text-muted mt-2">{item.jobDescription.slice(0, 100)}...</p>
     
                                     <ul className="list-unstyled mb-0">

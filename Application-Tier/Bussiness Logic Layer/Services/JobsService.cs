@@ -10,7 +10,8 @@ namespace Bussiness_Logic_Layer.Services
     {
         Task<Job> GetJob(string id);
         Task PostJob(JobDTO request);
-        Task<List<Job>> GetJobs(string id);
+        Task<List<Job>> GetEmployersJobs(string id);
+        Task<List<Job>> GetPopularJobs();
     }
     public class JobsService:IJobsService
     {
@@ -40,13 +41,37 @@ namespace Bussiness_Logic_Layer.Services
              
             return job;
         }
-        public async Task<List<Job>> GetJobs(string id)
+        public async Task<List<Job>> GetEmployersJobs(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
                 throw new Exception("Id is null");
             }
             var jobs = await _context.Jobs.Where(j => j.CompanyId == id).ToListAsync();
+
+            foreach (var job in jobs)
+            {
+                var user = await _identity.GetUserById(job.CompanyId);
+                job.CompanyName = user.UserName;
+                job.CompanyLocation = user.Location;
+                job.CompanyPhoto = await _identity.GetUserPhoto(user);
+            }
+
+            return jobs;
+        }
+
+        public async Task<List<Job>> GetPopularJobs()
+        {
+            var jobs = await _context.Jobs.ToListAsync();
+
+            foreach(var job in jobs)
+            {
+                var user = await _identity.GetUserById(job.CompanyId);
+                job.CompanyName = user.UserName;
+                job.CompanyLocation = user.Location;
+                job.CompanyPhoto = await _identity.GetUserPhoto(user);
+            }
+
             return jobs;
         }
         #endregion
@@ -68,11 +93,12 @@ namespace Bussiness_Logic_Layer.Services
                 Experience = request.Experience,
                 Skills = request.Skills,
                 Salary = request.Salary,
-                Industry = request.Industry,
+                Type = request.Type,
                 Location = request.Location,
                 Qualification = request.Qualification,
                 Spots = request.Spots
             };
+
             await _context.Jobs.AddAsync(_job);
             await _context.SaveChangesAsync();
         }

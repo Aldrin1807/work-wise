@@ -1,12 +1,10 @@
 import { Link, useParams } from "react-router-dom";
 
-import logo1 from '../assets/images/company/lenovo-logo.png'
-
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import ScrollTop from "../components/scrollTop";
 
-import {FiLayout, FiMapPin,FiUserCheck, FiClock, FiMonitor, FiBriefcase, FiBook, FiDollarSign, FiArrowRight} from "../assets/icons/vander"
+import {FiLayout, FiMapPin,FiUserCheck, FiClock, FiMonitor, FiBriefcase, FiBook, FiDollarSign} from "../assets/icons/vander"
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchJob } from "../api/user-api";
@@ -80,7 +78,12 @@ export default function JobDetail() {
 
                         <h5>Job Description: </h5>
                         <p className="text-muted">{jobData.jobDescription}</p>
-                    
+                        <h5>Skills</h5>
+                        <div className="d-flex flex-wrap">
+                                        {jobData.skills && jobData.skills.split(",").map((skill: string, index: number) => (
+                                            <span key={index} className="badge bg-primary me-2 mb-2">{skill.trim()}</span>
+                                        ))}
+                        </div>
                         <div className="mt-4">
                             <Link to="/job-apply" className="btn btn-outline-primary">Apply Now <i className="mdi mdi-send"></i></Link>
                         </div>
@@ -104,8 +107,8 @@ export default function JobDetail() {
                                 <div className="d-flex widget align-items-center mt-3">
                                     <FiUserCheck className="fea icon-ex-md me-3"/>
                                     <div className="flex-1">
-                                        <h6 className="widget-title mb-0">Industry :</h6>
-                                        <small className="text-primary mb-0">{jobData.industry}</small>
+                                        <h6 className="widget-title mb-0">Type :</h6>
+                                        <small className="text-primary mb-0">{jobData.type}</small>
                                     </div>
                                 </div>
 

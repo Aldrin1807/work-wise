@@ -13,7 +13,7 @@ import { postJob } from "../api/employer-api";
 export default function JobPost(){
     const user = useSelector((state: any) => state.user);
     const navigate  = useNavigate();
-    
+
     const loadOptions = async (inputValue: string) => {
         try {
           const apiKey = "jsFS3p4blUMW5VutIIuiMoR4FRqh1PGq";
@@ -49,7 +49,7 @@ export default function JobPost(){
         skills: '',
         location: '',
         qualification: '',
-        industry: '',
+        type: '',
         spots: 0,
         category: '',
         companyId: user.userId,
@@ -66,9 +66,11 @@ export default function JobPost(){
       };
 
     const country_list = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cruise Ship","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyz Republic","Kosova","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Namibia","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Satellite","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","St. Lucia","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
-    const industries = ["Accounting", "Airlines/Aviation", "Alternative Dispute Resolution", "Alternative Medicine", "Animation", "Apparel & Fashion", "Architecture & Planning", "Arts & Crafts", "Automotive", "Aviation & Aerospace", "Banking", "Biotechnology", "Broadcast Media", "Building Materials", "Business Supplies & Equipment", "Capital Markets", "Chemicals", "Civic & Social Organization", "Civil Engineering", "Commercial Real Estate", "Computer & Network Security", "Computer Games", "Computer Hardware", "Computer Networking", "Computer Software", "Construction", "Consumer Electronics", "Consumer Goods", "Consumer Services", "Cosmetics", "Dairy", "Defense & Space", "Design", "Education Management", "E-learning", "Electrical & Electronic Manufacturing", "Entertainment", "Environmental Services", "Events Services", "Executive Office", "Facilities Services", "Farming", "Financial Services", "Fine Art", "Fishery", "Food & Beverages", "Food Production", "Fundraising", "Furniture", "Gambling & Casinos", "Glass, Ceramics & Concrete", "Government Administration", "Government Relations", "Graphic Design", "Health, Wellness & Fitness", "Higher Education", "Hospital & Health Care", "Hospitality", "Human Resources", "Import & Export", "Individual & Family Services", "Industrial Automation", "Information Services", "Information Technology & Services", "Insurance", "International Affairs", "International Trade & Development", "Internet", "Investment Banking/Venture", "Investment Management", "Judiciary", "Law Enforcement", "Law Practice", "Legal Services", "Legislative Office", "Leisure & Travel", "Libraries", "Logistics & Supply Chain", "Luxury Goods & Jewelry", "Machinery", "Management Consulting", "Maritime", "Market Research", "Marketing & Advertising", "Mechanical Or Industrial Engineering", "Media Production", "Medical Device", "Medical Practice", "Mental Health Care", "Military", "Mining & Metals", "Motion Pictures & Film", "Museums & Institutions", "Music", "Nanotechnology", "Newspapers", "Nonprofit Organization Management", "Oil & Energy", "Online Media", "Outsourcing/Offshoring", "Package/Freight Delivery", "Packaging & Containers", "Paper & Forest Products", "Performing Arts", "Pharmaceuticals", "Philanthropy", "Photography", "Plastics", "Political Organization", "Primary/Secondary Education", "Printing", "Professional Training", "Program Development", "Public Policy", "Public Relations", "Public Safety", "Publishing", "Railroad Manufacture", "Ranching", "Real Estate", "Recreational Facilities & Services", "Religious Institutions", "Renewables & Environment", "Research", "Restaurants", "Retail", "Security & Investigations", "Semiconductors", "Shipbuilding", "Sporting Goods", "Sports", "Staffing & Recruiting", "Supermarkets", "Telecommunications", "Textiles", "Think Tanks", "Tobacco", "Translation & Localization", "Transportation/Trucking/Railroad", "Utilities", "Venture Capital", "Veterinary", "Warehousing", "Wholesale", "Wine & Spirits", "Wireless", "Writing & Editing"];
     const jobCategories = [
         "Technology", "Healthcare", "Finance", "Marketing", "Education", "Sales", "Customer Service", "Design", "Human Resources", "Hospitality"
+      ];
+    const jobTypes = [
+        "Full Time", "Part Time", "Freelancer", "Remote Work", "Office Work"
       ];
 
       useEffect(() => {
@@ -83,7 +85,7 @@ export default function JobPost(){
         e.preventDefault();
         
         console.log(formData);
-        if(formData.jobTitle === '' || formData.jobDescription === '' || formData.experience === '' || salary === 0 || formData.skills === '' || formData.location === '' || formData.qualification === '' || formData.industry === '' || formData.spots === 0 || formData.category === ''){
+        if(formData.jobTitle === '' || formData.jobDescription === '' || formData.experience === '' || salary === 0 || formData.skills === '' || formData.location === '' || formData.qualification === '' || formData.type === '' || formData.spots === 0 || formData.category === ''){
             console.log("Form invalid");
             setValidationError("All of the fields are required!");
             return;
@@ -159,11 +161,11 @@ export default function JobPost(){
 
                                     <div className="col-md-6">
                                         <div className="mb-3">
-                                            <label className="form-label fw-semibold">Job Categories:</label>
-                                            <select className="form-control form-select" id="category" value={formData.category} onChange={onChange}>
-                                                <option value="" disabled>Select your category</option>
-                                                {jobCategories.map((category, index) => (
-                                                <option key={index} value={category}>{category}</option>
+                                            <label className="form-label fw-semibold">Type:</label>
+                                            <select className="form-control form-select" id="type" value={formData.type} onChange={onChange} name="type">
+                                                <option value="" disabled>Select the type</option>
+                                                {jobTypes.map((industry, index) =>(
+                                                    <option key={index} value={industry}>{industry}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -215,11 +217,11 @@ export default function JobPost(){
 
                                     <div className="col-md-6">
                                         <div className="mb-3">
-                                            <label className="form-label fw-semibold">Industry:</label>
-                                            <select className="form-control form-select" id="industry" value={formData.industry} onChange={onChange} name="industry">
-                                                <option value="" disabled>Select the industry</option>
-                                                {industries.map((industry, index) =>(
-                                                    <option key={index} value={industry}>{industry}</option>
+                                            <label className="form-label fw-semibold">Job Categories:</label>
+                                            <select className="form-control form-select" id="category" value={formData.category} onChange={onChange}>
+                                                <option value="" disabled>Select your category</option>
+                                                {jobCategories.map((category, index) => (
+                                                <option key={index} value={category}>{category}</option>
                                                 ))}
                                             </select>
                                         </div>

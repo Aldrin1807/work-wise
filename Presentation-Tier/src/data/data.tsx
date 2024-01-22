@@ -286,47 +286,17 @@ export const jobData = [
 ]
 
 export const servicesData = [
-    {
-        icon:FiPhone,
-        title:'24/7 Support',
-        desc:'Many desktop publishing now use and a search for job.'
-    },
-    {
-        icon:FiCpu,
-        title:'Tech & Startup Jobs',
-        desc:'Many desktop publishing now use and a search for job.'
-    },
-    {
-        icon:FiActivity,
-        title:'Quick & Easy',
-        desc:'Many desktop publishing now use and a search for job.'
-    },
-    {
-        icon:FiClock,
-        title:'Save Time',
-        desc:'Many desktop publishing now use and a search for job.'
-    },
-    {
-        icon:FiFileText,
-        title:'Apply with confidence',
-        desc:'Many desktop publishing now use and a search for job.'
-    },
-    {
-        icon:FiCodesandbox,
-        title:'Reduce Hiring Bias',
-        desc:'Many desktop publishing now use and a search for job.'
-    },
-    {
-        icon:FiUsers,
-        title:'Proactive Employers',
-        desc:'Many desktop publishing now use and a search for job.'
-    },
-    {
-        icon:FiUser,
-        title:'Proactive Employers',
-        desc:'Many desktop publishing now use and a search for job.'
-    },
-]
+    { icon: FiPhone, title: '24/7 Support', desc: 'Round-the-clock assistance for your queries.' },
+    { icon: FiUsers, title: 'Proactive Employers', desc: 'Connect with proactive employers seeking talent.' },
+    { icon: FiActivity, title: 'Quick & Easy', desc: 'Efficient and hassle-free job search process.' },
+    { icon: FiClock, title: 'Save Time', desc: 'Streamlined platform to save valuable time.' },
+    { icon: FiFileText, title: 'Apply with Confidence', desc: 'Tools and resources for confident job applications.' },
+    { icon: FiCpu, title: 'Tech & Startup Jobs', desc: 'Explore dynamic opportunities in tech and startups.' },
+    { icon: FiCodesandbox, title: 'Reduce Hiring Bias', desc: 'Promoting fair and inclusive hiring practices.' },
+    { icon: FiUser, title: 'Personalized Job Recommendations', desc: 'Tailored job suggestions based on your profile.' },
+];
+
+
 
 export const blogData = [
     {

@@ -109,3 +109,13 @@ export const fetchJob = async (token: string,id :string) => {
     }
 };
 
+export const fetchPopularJobs = async () => {
+  try {
+    const response = await axios.get(`${API_URL}Jobs/get-popular-jobs`);
+      console.log(response.data);
+      return response.data;
+    }catch (error) {
+      console.error(error);
+    }
+}
+

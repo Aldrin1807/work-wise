@@ -31,11 +31,26 @@ namespace API_Layer.Controllers
         }
 
         [HttpGet("get-jobs/{id}")]
-        public async Task<IActionResult> GetJobs(string id)
+        public async Task<IActionResult> GetEmployersJobs(string id)
         {
             try
             {
-                var jobs = await _service.GetJobs(id);
+                var jobs = await _service.GetEmployersJobs(id);
+                return Ok(jobs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
+
+        [HttpGet("get-popular-jobs")]
+        public async Task<IActionResult> GetPopularJobs()
+        {
+            try
+            {
+                var jobs = await _service.GetPopularJobs();
                 return Ok(jobs);
             }
             catch (Exception ex)

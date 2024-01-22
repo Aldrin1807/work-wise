@@ -4,12 +4,12 @@ import logoDark from "../assets/images/logo-dark.png"
 import logoWhite from "../assets/images/logo-white.png"
 import logoLight from "../assets/images/logo-light.png"
 import { FaRegBell } from "react-icons/fa";
-import { FiUser, FiSettings, FiLogOut } from "react-icons/fi";
+import { FiUser,  FiLogOut } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { fetchUser } from "../api/user-api";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../redux/userSlice";
-import { FaCheck, FaLinesLeaning } from "react-icons/fa6";
+import { FaCheck } from "react-icons/fa6";
 
 export default function Navbar({navClass, navLight}: {navClass: string, navLight: boolean}){
     const dispatch = useDispatch();

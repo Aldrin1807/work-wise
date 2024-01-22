@@ -13,8 +13,10 @@ import ScrollTop from '../components/scrollTop';
 import { FiSearch, FiClock, FiMapPin, FiDollarSign} from "../assets/icons/vander"
 
 
-import { categoriesTwoData, jobData } from '../data/data';
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { fetchPopularJobs } from "../api/user-api";
+import AboutTwo from "../components/aboutTwo";
 
 
 export default function Home(){
@@ -23,6 +25,16 @@ export default function Home(){
     const navigateToPostJob = () => {
         navigate("/job-post");
     }
+
+    const[jobData,setJobData] = useState([] as any);
+
+    useEffect(()=>{
+        const fetchJobs = async () => {
+            const response = await fetchPopularJobs();
+            setJobData(response);
+        }
+        fetchJobs();
+    },[])
     return(
         <>
         <Navbar navClass="defaultscroll sticky" navLight={true}/>
@@ -107,6 +119,7 @@ export default function Home(){
         <section className="section">
             <Counter/>
 
+            {user.role != "Employer" && (
             <div className="container mt-100 mt-60">
                 <div className="row justify-content-center mb-4 pb-2">
                     <div className="col-12">
@@ -118,26 +131,30 @@ export default function Home(){
                 </div>
 
                 <div className="row g-4 mt-0">
-                    {jobData.slice(0,6).map((item,index) => {
+                    {jobData.slice(0,6).map((item:any,index:any) => {
                         return(
                         <div className="col-lg-4 col-md-6 col-12" key={index}>
                             <div className="job-post rounded shadow bg-white">
                                 <div className="p-4">
-                                    <Link to={`/job-detail-two/${item.id}`} className="text-dark title h5">{item.title}</Link>
+                                    <Link to={`/job-detail/${item.id}`} className="text-dark title h5">{item.jobTitle}</Link>
     
-                                    <p className="text-muted d-flex align-items-center small mt-3"><FiClock className="fea icon-sm text-primary me-1"/>Posted {item.posted} Days ago</p>
+                                    <p className="text-muted d-flex align-items-center small mt-3"><FiClock className="fea icon-sm text-primary me-1"/>Posted {item.dateTime}</p>
     
                                     <ul className="list-unstyled d-flex justify-content-between align-items-center mb-0 mt-3">
-                                        <li className="list-inline-item"><span className="badge bg-soft-primary">{item.jobTime}</span></li>
-                                        <li className="list-inline-item"><span className="text-muted d-flex align-items-center small"><FiDollarSign className="fea icon-sm text-primary me-1"/>{item.salary}/mo</span></li>
+                                        <div className="skills-list">
+                                            {item.skills.split(', ').slice(0, 2).map((skill:any) => {
+                                                return <li className="list-inline-item"><span className="badge bg-soft-primary">{skill}</span></li>;
+                                            })}
+                                        </div>
+                                        <li className="list-inline-item"><span className="text-muted d-flex align-items-center small"><FiDollarSign className="fea icon-sm text-primary me-1"/>{item.salary}</span></li>
                                     </ul>
                                 </div>
                                 <div className="d-flex align-items-center p-4 border-top">
-                                    <img src={item.image} className="avatar avatar-small rounded shadow p-3 bg-white" alt=""/>
+                                    <img src={`data:image/png;base64, ${item.companyPhoto}`} className="rounded-pill shadow border border-3 avatar avatar-small" alt=""/>
     
                                     <div className="ms-3">
-                                        <Link to="/employer-profile" className="h5 company text-dark">{item.name}</Link>
-                                        <span className="text-muted d-flex align-items-center mt-1"><FiMapPin className="fea icon-sm me-1"/>{item.country}</span>
+                                        <Link to={`/employer-profile/${item.companyId}`} className="h5 company text-dark">{item.companyName}</Link>
+                                        <span className="text-muted d-flex align-items-center mt-1"><FiMapPin className="fea icon-sm me-1"/>{item.companyLocation}</span>
                                     </div>
                                 </div>
                             </div>
@@ -146,56 +163,50 @@ export default function Home(){
                     })}
                 </div>
             </div>
-            <AboutUs containerClass="container mt-100 mt-60"/>
+            )}
+            <AboutUs containerClass="container mt-100 mt-60" role={user.isAuthenticated?(user.role):'user'}/>
 
-            <div className="container mt-100 mt-60">
-                <div className="row justify-content-center mb-4 pb-2">
-                    <div className="col-12">
-                        <div className="section-title text-center">
-                            <h4 className="title mb-3">Browse by Categories</h4>
-                            <p className="text-muted para-desc mx-auto mb-0">Search all the open positions on the web. Get your own personalized salary estimate. Read reviews on over 30000+ companies worldwide.</p>
-                        </div>
-                    </div>
-                </div>
-            
-                <div className="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 mt-0">
-                    {categoriesTwoData.map((item,index)=>{
-                        return(
-                            <div className="col" key={index}>
-                                <div className="job-category job-category-two rounded shadow bg-light p-3">
-                                    <h5 className="mb-1">{item.title}</h5>
-                                    <p className="text-muted para mb-2">{item.job}</p>
-                                    <Link to="" className="text-primary fw-medium link">Explore Jobs <i className="mdi mdi-arrow-right"></i></Link>
-                                </div>
+            {user.role != "Employer" && (
+            <>
+                <div className="container mt-100 mt-60">
+                    <div className="row justify-content-center mb-4 pb-2">
+                        <div className="col-12">
+                            <div className="section-title text-center">
+                                <h4 className="title mb-3">Browse by Categories</h4>
+                                <p className="text-muted para-desc mx-auto mb-0">Search all the open positions on the web. Get your own personalized salary estimate. Read reviews on over 30000+ companies worldwide.</p>
                             </div>
-                        )
-                    })}
-                </div>
+                        </div>
+                    </div>
+                
+                    <div className="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 mt-0">
+                        {/* {categoriesTwoData.map((item,index)=>{
+                            return(
+                                <div className="col" key={index}>
+                                    <div className="job-category job-category-two rounded shadow bg-light p-3">
+                                        <h5 className="mb-1">{item.title}</h5>
+                                        <p className="text-muted para mb-2">{item.job}</p>
+                                        <Link to="" className="text-primary fw-medium link">Explore Jobs <i className="mdi mdi-arrow-right"></i></Link>
+                                    </div>
+                                </div>
+                            )
+                        })} */}
+                    </div>
 
-                <div className="row mt-4">
-                    <div className="col-12">
-                        <div className="text-center">
-                            <Link to="/job-categories" className="btn btn-link primary text-muted">See More Categories <i className="mdi mdi-arrow-right"></i></Link>
+                    <div className="row mt-4">
+                        <div className="col-12">
+                            <div className="text-center">
+                                <Link to="/job-categories" className="btn btn-link primary text-muted">See More Categories <i className="mdi mdi-arrow-right"></i></Link>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div className="container mt-100 mt-60">
-                <Companies/>
-            </div>
-
-            <div className="container mt-100 mt-60">
-                <div className="row justify-content-center">
-                    <div className="col">
-                        <div className="section-title text-center mb-4 pb-2">
-                            <h4 className="title mb-3">Latest Blog or News</h4>
-                            <p className="text-muted para-desc mb-0 mx-auto">Search all the open positions on the web. Get your own personalized salary estimate. Read reviews on over 30000+ companies worldwide.</p>
-                        </div>
-                    </div>
+                
+                <div className="container mt-100 mt-60">
+                    <Companies/>
                 </div>
-
-            </div>
+            </>
+            )}
+           <AboutTwo/>
         </section>
         <Footer top={false}/>
         <ScrollTop/>

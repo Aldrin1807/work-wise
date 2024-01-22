@@ -27,9 +27,6 @@ export default function AboutTwo(){
                             <div className="mt-4">
                                 <Link to="" className="title h5 text-dark">{item.title}</Link>
                                 <p className="text-muted mt-3 mb-0">{item.desc}</p>
-                                <div className="mt-3">
-                                    <Link to="" className="btn btn-link primary text-dark">Read More <i className="mdi mdi-arrow-right"></i></Link>
-                                </div>
                             </div>
                         </div>
                     </div>
