@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 import bg1 from '../assets/images/hero/bg.jpg'
+import swal from 'sweetalert';
 
 import Navbar from "../components/navbar";
 import AboutTwo from "../components/aboutTwo";
@@ -10,7 +11,7 @@ import ScrollTop from "../components/scrollTop";
 import { CiTrash } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchMyJobs } from "../api/employer-api";
+import { deleteJob, fetchMyJobs } from "../api/employer-api";
 
 
 export default function MyJobs(){
@@ -24,6 +25,32 @@ export default function MyJobs(){
         }
         fetchJobs();
     }, []);
+
+    const handleDelete = async (id: string) => {
+        swal({
+          title: "Are you sure?",
+          text: "Once deleted, you will not be able to recover this job!",
+          icon: "warning",
+          buttons: ["Cancel", "Delete"],
+          dangerMode: true,
+        }).then(async (willDelete) => {
+          if (willDelete) {
+            try {
+              const result = await deleteJob(user.token, id);
+              swal("Poof! The job has been deleted!", {
+                icon: "success",
+              });
+              // Handle the result if needed
+              console.log(result);
+            } catch (error) {
+            swal("Oops! Something went wrong.", (error as any).message, "error");
+            }
+          } else {
+            swal("Job is safe!");
+          }
+        });
+      }
+      
     return(
         <>
         <Navbar navClass="defaultscroll sticky" navLight={true}/>
@@ -65,7 +92,7 @@ export default function MyJobs(){
                                         <li className="d-inline-block me-1"><Link to="" className="badge bg-primary">{item.category}</Link></li>
                                         <li className="d-inline-block" style={{ marginLeft: "5rem" }}>
                                             <Link to="" className="btn btn-icon btn-sm btn-soft-danger">
-                                                <CiTrash className="icons" />
+                                                <CiTrash className="icons" onClick={() => handleDelete(item.id)} />
                                             </Link>
                                         </li>
 

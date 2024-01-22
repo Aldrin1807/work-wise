@@ -20,12 +20,10 @@ export const Registration = async (form:FormData) => {
             "success"
             );
         return true
-      }else{
-        await swal("Registration Failed", response.data.message, "error");
-        return false;
       }
     }catch (error) {
-      return false;
+      await swal("Registration Failed", (error as any).response.data.message, "error");
+      return false
     }
 };
 
@@ -51,13 +49,11 @@ export const LoginUser = async (credentials: object) => {
       }));
 
         return true;
-    } else {
-      await swal("Login Failed", response.data.message, "error");
-      return false;
-    }
+    } 
+    
   } catch (error) {
-    console.error(error);
-    return false;
+    await swal("Login Failed", (error as any).response.data.message, "error");
+    return false
   }
 };
 
@@ -94,6 +90,7 @@ export const saveAdditionalData = async (token: string, data: object) => {
     return false;
   } catch (error) {
     console.error(error);
+    await swal("Save failed", (error as any).response.data.message, "error");
     return false;
   }
 }

@@ -83,7 +83,7 @@ export default function EmployerProfile(){
 
                                 {user.email == employerData.email ? (
                                 <div className="mt-4 mt-md-0">
-                                    <Link to="/job-grid-one" className="btn btn-sm btn-soft-primary">Post job</Link>
+                                    <Link to="/job-post" className="btn btn-sm btn-soft-primary">Post job</Link>
                                 </div>
                                 ): ''}
                             </div>

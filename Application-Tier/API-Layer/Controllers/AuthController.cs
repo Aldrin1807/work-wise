@@ -26,7 +26,7 @@ namespace API_Layer.Controllers
             }
             catch(Exception ex)
             {
-                return Ok(new Response
+                return BadRequest(new Response
                 { Status = "Error", Message = ex.Message });
             }
         }
@@ -41,7 +41,7 @@ namespace API_Layer.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Response
+                return BadRequest(new Response
                 { Status = "Error", Message = ex.Message });
             }
         }
@@ -57,7 +57,7 @@ namespace API_Layer.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Response
+                return BadRequest(new Response
                 { Status = "Error", Message = ex.Message });
             }
         }

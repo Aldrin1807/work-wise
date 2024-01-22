@@ -15,12 +15,10 @@ export const Registration = async (form:FormData) => {
             "success"
             );
         return true
-      }else{
-        await swal("Registration Failed", response.data.message, "error");
-        return false;
       }
     }catch (error) {
       console.error(error);
+      await swal("Registration Failed", (error as any).response.data.message, "error");
       return false;
     }
 };
@@ -55,12 +53,10 @@ export const postJob = async (form: any, token: string) => {
           "success"
           );
       return true
-    }else{
-      await swal("Registration Failed", response.data.message, "error");
-      return false;
     }
   }catch (error) {
     console.error(error);
+    await swal("Posting failed", (error as any).response.data.message, "error");
     return false;
   }
 };
@@ -77,3 +73,16 @@ export const fetchMyJobs = async (token: string,id :string) => {
       console.error(error);
     }
 };
+export const deleteJob = async (token: string,id :string) => {
+  try {
+    const response = await axios.delete(`${API_URL}Jobs/delete-job/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+      console.log(response.data);
+      return response.data;
+    }catch (error) {
+      console.error(error);
+    }
+}

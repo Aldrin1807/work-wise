@@ -137,9 +137,7 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                                                     <FiUser className="fea icon-sm me-2 align-middle" />Profile
                                                 </Link>
                                                 {user.role==="Employer"?(
-                                                    <Link to="/candidate-profile-setting/1" className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
-                                                        <FaLinesLeaning   className="fea icon-sm me-2 align-middle" />Posted Jobs
-                                                    </Link>
+                                                   ''
                                                 ):(
                                                     <Link to="/candidate-profile-setting/1" className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
                                                         <FaCheck  className="fea icon-sm me-2 align-middle" />Applied Jobs
