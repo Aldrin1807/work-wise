@@ -64,3 +64,16 @@ export const postJob = async (form: any, token: string) => {
     return false;
   }
 };
+export const fetchMyJobs = async (token: string,id :string) => {
+  try {
+    const response = await axios.get(`${API_URL}Employer/get-jobs/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+      console.log(response.data);
+      return response.data;
+    }catch (error) {
+      console.error(error);
+    }
+};

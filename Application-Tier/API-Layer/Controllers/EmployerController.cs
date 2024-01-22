@@ -30,6 +30,21 @@ namespace API_Layer.Controllers
             }
         }
 
+        [HttpGet("get-jobs/{id}")]
+        public async Task<IActionResult> GetJobs(string id)
+        {
+            try
+            {
+                var jobs = await _service.GetJobs(id);
+                return Ok(jobs);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
+
         [HttpPost("post-job")]
         public async Task<IActionResult> PostJob([FromBody] JobDTO request)
         {

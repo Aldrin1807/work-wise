@@ -7,11 +7,23 @@ import AboutTwo from "../components/aboutTwo";
 import Footer from "../components/footer";
 import ScrollTop from "../components/scrollTop";
 
-import { jobData } from "../data/data";
 import { CiTrash } from "react-icons/ci";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { fetchMyJobs } from "../api/employer-api";
 
 
 export default function MyJobs(){
+    const user = useSelector((state: any) => state.user);
+    const [jobData, setJobData] = useState([] as any);
+
+    useEffect(() => {
+        const fetchJobs = async () => {
+            const response = await fetchMyJobs(user.token, user.userId);
+            setJobData(response);
+        }
+        fetchJobs();
+    }, []);
     return(
         <>
         <Navbar navClass="defaultscroll sticky" navLight={true}/>
@@ -39,23 +51,24 @@ export default function MyJobs(){
 
             <div className="container mt-60">
                 <div className="row g-4">
-                    {jobData.map((item,index)=>{
+                    {jobData.map((item:any,index:any)=>{
                         return(
                         <div className="col-lg-4 col-md-6 col-12" key={index}>
                             <div className="job-post job-type-three rounded shadow bg-white p-4">
                                 
                                 <div className="mt-2">
-                                    <Link to={`/job-detail-three/${item.id}`} className="text-dark title h5">{item.title}</Link>
-                                    <p className="text-muted mt-2">{item.desc}</p>
+                                    <Link to={`/job-detail-three/${item.id}`} className="text-dark title h5">{item.jobTitle}</Link>
+                                    <p className="text-muted mt-2">{item.jobDescription.slice(0, 100)}...</p>
     
                                     <ul className="list-unstyled mb-0">
-                                        <li className="d-inline-block me-1"><Link to="" className="badge bg-primary">{item.jobTime}</Link></li>
-                                        <li className="d-inline-block me-1"><Link to="" className="badge bg-primary"><i className="mdi mdi-map-marker me-1"></i>{item.country}</Link></li>
-                                    </ul>
-                                </div>
-                                <div className="d-flex justify-content-end">
-                                    <ul className="list-unstyled align-items-center mb-0">
-                                        <li className="list-inline-item"><Link to="" className="btn btn-icon btn-sm btn-soft-danger"><CiTrash className="icons"/></Link></li>
+                                        <li className="d-inline-block me-1"><Link to="" className="badge bg-primary"><i className="mdi mdi-map-marker me-1"></i>{item.location}</Link></li>
+                                        <li className="d-inline-block me-1"><Link to="" className="badge bg-primary">{item.category}</Link></li>
+                                        <li className="d-inline-block" style={{ marginLeft: "5rem" }}>
+                                            <Link to="" className="btn btn-icon btn-sm btn-soft-danger">
+                                                <CiTrash className="icons" />
+                                            </Link>
+                                        </li>
+
                                     </ul>
                                 </div>
                             </div>

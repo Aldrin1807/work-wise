@@ -11,6 +11,7 @@ namespace Bussiness_Logic_Layer.Services
     {
         Task<EmployerDTO> GetEmployer(string id);
         Task PostJob(JobDTO request);
+        Task<List<Job>> GetJobs(string id);
     }
     public class EmployerService:IEmployerService
     {
@@ -86,6 +87,16 @@ namespace Bussiness_Logic_Layer.Services
             };
             await _context.Jobs.AddAsync(_job);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Job>> GetJobs(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new Exception("Id is null");
+            }
+            var jobs = await _context.Jobs.Where(j => j.CompanyId == id).ToListAsync();
+            return jobs;
         }
         #endregion
     }
