@@ -107,25 +107,17 @@ export default function EmployerProfile(){
                             ):(
                             employerData.jobs.map((item:any)=>{
                                 return(
-                                    <div className="col-lg-6 col-12" key={Math.random()}>
+                                    <div className="col-lg-6 col-12" key={item.id}>
                                         <div className="job-post rounded shadow bg-white">
                                             <div className="p-4">
-                                                <Link to={`/job-detail-one/${item.id}`} className="text-dark title h5">{item.title}</Link>
+                                                <Link to={`/job-detail/${item.id}`} className="text-dark title h5">{item.jobTitle}</Link>
 
-                                                <p className="text-muted d-flex align-items-center small mt-3"><FiClock className="fea icon-sm text-primary me-1"/>Posted {item.posted} </p>
+                                                <p className="text-muted d-flex align-items-center small mt-3"><FiClock className="fea icon-sm text-primary me-1"/>Posted {item.dateTime} </p>
 
                                                 <ul className="list-unstyled d-flex justify-content-between align-items-center mb-0 mt-3">
-                                                    <li className="list-inline-item"><span className="badge bg-soft-primary">{item.jobTime}</span></li>
-                                                    <li className="list-inline-item"><span className="text-muted d-flex align-items-center small"><FiDollarSign className="fea icon-sm text-primary me-1"/>{item.salary}/mo</span></li>
+                                                    <li className="list-inline-item"><span className="badge bg-soft-primary">{item.category}</span></li>
+                                                    <li className="list-inline-item"><span className="text-muted d-flex align-items-center small"><FiDollarSign className="fea icon-sm text-primary me-1"/>{item.salary}</span></li>
                                                 </ul>
-                                            </div>
-                                            <div className="d-flex align-items-center p-4 border-top">
-                                                <img src={item.image} className="avatar avatar-small rounded shadow p-3 bg-white" alt=""/>
-            
-                                                <div className="ms-3">
-                                                    <h6>{item.name}</h6>
-                                                    <span className="text-muted d-flex align-items-center"><FiMapPin className="fea icon-sm me-1"/>{item.country}</span>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>

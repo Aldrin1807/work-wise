@@ -10,8 +10,6 @@ namespace Bussiness_Logic_Layer.Services
     public interface IEmployerService
     {
         Task<EmployerDTO> GetEmployer(string id);
-        Task PostJob(JobDTO request);
-        Task<List<Job>> GetJobs(string id);
     }
     public class EmployerService:IEmployerService
     {
@@ -25,7 +23,7 @@ namespace Bussiness_Logic_Layer.Services
             _identity = identity;
         }
 
-        #region Employer Data
+        #region GET
         public async Task<EmployerDTO> GetEmployer(string id)
         {
             if (id == null)
@@ -63,41 +61,6 @@ namespace Bussiness_Logic_Layer.Services
 
         #endregion
 
-        #region Job Data
-        public async Task PostJob(JobDTO request)
-        {
-            if(request == null)
-            {
-                throw new Exception("Request is empty");
-            }
-            var _job = new Job
-            {
-                JobTitle = request.JobTitle,
-                JobDescription = request.JobDescription,
-                Category = request.Category,
-                CompanyId = request.CompanyId,
-                DateTime = DateTime.UtcNow.ToShortDateString(),
-                Experience = request.Experience,
-                Skills = request.Skills,
-                Salary = request.Salary,
-                Industry = request.Industry,
-                Location = request.Location,
-                Qualification = request.Qualification,
-                Spots = request.Spots
-            };
-            await _context.Jobs.AddAsync(_job);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<Job>> GetJobs(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new Exception("Id is null");
-            }
-            var jobs = await _context.Jobs.Where(j => j.CompanyId == id).ToListAsync();
-            return jobs;
-        }
-        #endregion
+        
     }
 }

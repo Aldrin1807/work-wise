@@ -97,3 +97,18 @@ export const saveAdditionalData = async (token: string, data: object) => {
     return false;
   }
 }
+
+export const fetchJob = async (token: string,id :string) => {
+  try {
+    const response = await axios.get(`${API_URL}Jobs/get-job/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+      console.log(response.data);
+      return response.data;
+    }catch (error) {
+      console.error(error);
+    }
+};
+

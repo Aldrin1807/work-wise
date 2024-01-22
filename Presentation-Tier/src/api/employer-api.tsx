@@ -41,7 +41,7 @@ export const fetchEmployer = async (token: string,id :string) => {
 
 export const postJob = async (form: any, token: string) => {
   try {
-      const response = await axios.post(`${API_URL}Employer/post-job`, form,{
+      const response = await axios.post(`${API_URL}Jobs/post-job`, form,{
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -66,7 +66,7 @@ export const postJob = async (form: any, token: string) => {
 };
 export const fetchMyJobs = async (token: string,id :string) => {
   try {
-    const response = await axios.get(`${API_URL}Employer/get-jobs/${id}`, {
+    const response = await axios.get(`${API_URL}Jobs/get-jobs/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

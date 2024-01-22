@@ -55,6 +55,7 @@ namespace API_Layer
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IEmployerService, EmployerService>();
             builder.Services.AddScoped<IIdentityService, IdentityService>();
+            builder.Services.AddScoped<IJobsService, JobsService>();
 
 
 
