@@ -17,7 +17,7 @@ import Employers from "./pages/employers";
 import EmployerProfile from "./pages/employer-profile";
 import Candidates from "./pages/candidates";
 import CandidateProfile from "./pages/candidate-profile";
-import CandidateProfileSetting from "./pages/candidate-profile-setting";
+import MyJobs from "./pages/my-jobs";
 import AboutUs from "./pages/aboutus";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
@@ -60,7 +60,9 @@ function App() {
     ...commonRoutes,
     { path: '/candidates', element: <Candidates /> },
     { path: '/employer-profile/:id', element: <EmployerProfile /> },
+    { path: '/candidate-profile/:id', element: <CandidateProfile /> },
     { path: '/job-post', element: <JobPost /> },
+    { path: '/my-jobs', element: <MyJobs /> },
   ];
 
   const getRoutesBasedOnRole = () => {

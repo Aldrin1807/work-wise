@@ -73,7 +73,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Jobs");
+                    b.ToTable("Jobs", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.JobApplication", b =>
@@ -96,7 +96,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("JobId");
 
-                    b.ToTable("JobApplications");
+                    b.ToTable("JobApplications", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.Notification", b =>
@@ -120,7 +120,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.User", b =>
@@ -233,7 +233,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserExperiences");
+                    b.ToTable("UserExperiences", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

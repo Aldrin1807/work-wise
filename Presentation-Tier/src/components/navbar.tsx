@@ -159,13 +159,30 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
     
             <div id="navigation">  
                 <ul className="navigation-menu nav-right nav-light">
-                    <li className={`${["job-categories", "job-list","job-detail", "job-apply","job-post" ].includes(manu)? "active" : ""} parent-menu-item`}>
-                        <Link to="/job-list"> Jobs </Link><span className="menu-arrow"></span> 
-                    </li>
+                    {user.role==="Employer"?(
+                        <>
+                            <li className={`${["job-categories", "job-list","job-detail", "job-apply","job-post" ].includes(manu)? "active" : ""} parent-menu-item`}>
+                                <Link to="/my-jobs"> My Jobs </Link><span className="menu-arrow"></span> 
+                            </li>
+
+                            <li className={`${["candidates", "candidate-list" ].includes(manu)? "active" : ""} parent-menu-item`}>
+                                <Link to="/candidates"> Candidates </Link><span className="menu-arrow"></span> 
+                            </li>
+                        </>
+                    ):(
+                        <>
+                            <li className={`${["job-categories", "job-list","job-detail", "job-apply","job-post" ].includes(manu)? "active" : ""} parent-menu-item`}>
+                                <Link to="/job-list"> Jobs </Link><span className="menu-arrow"></span> 
+                            </li>
+
+                            <li className={`${["employers", "employer-profile"].includes(manu)? "active" : ""} parent-menu-item`}>
+                                <Link to="/employers" className="sub-menu-item">Employers</Link>
+                            </li>
+                        </>
+                    )}
                     
-                    <li className={`${["employers", "employer-profile"].includes(manu)? "active" : ""} parent-menu-item`}>
-                        <Link to="/employers" className="sub-menu-item">Employers</Link>
-                    </li>
+
+                    
                         
                     <li className={manu === "contactus"  ? "active" : ""}><Link to="/contactus" className="sub-menu-item">Contact Us</Link></li>
                 </ul>

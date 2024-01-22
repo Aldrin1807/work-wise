@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import bg1 from '../assets/images/hero/bg3.jpg'
 import heroImg from "../assets/images/hero.jpg"
@@ -15,14 +14,43 @@ import { FiSearch, FiClock, FiMapPin, FiDollarSign} from "../assets/icons/vander
 
 
 import { categoriesTwoData, jobData } from '../data/data';
+import { useSelector } from "react-redux";
 
 
 export default function Home(){
-    let [isOpen, setOpen] = useState(false);
+    const navigate = useNavigate();
+    const user = useSelector((state:any) => state.user);
+    const navigateToPostJob = () => {
+        navigate("/job-post");
+    }
     return(
         <>
         <Navbar navClass="defaultscroll sticky" navLight={true}/>
-        <section className="bg-half-260 pb-lg-0 pb-md-4 bg-primary d-table w-100" style={{backgroundImage:`url(${bg1})`}} id="home">
+        {user.isAuthenticated && user.role==="Employer"?(
+            <section className="bg-half-260 pb-lg-0 pb-md-4 bg-primary d-table w-100" style={{ backgroundImage: `url(${bg1})` }} id="home">
+            <div className="bg-overlay bg-black" style={{ opacity: '0.8' }}></div>
+            <div className="container">
+                <div className="row g-4 position-relative z-1">
+                    <div className="col-lg-7 col-md-6 col-12 mt-lg-5">
+                        <div className="title-heading">
+                            <h1 className="heading text-white title-dark mb-4">Hire the Best Talent<br /> for Your Company</h1>
+                            <p className="para-desc text-white-50">Connect with top-notch professionals and build a strong team. Post your job opportunities and find the perfect candidates.</p>
+                            
+                            <button className="btn btn-primary" onClick={navigateToPostJob}>Post a Job</button>
+                        </div>
+                    </div>
+        
+                    <div className="col-lg-5 col-md-6 col-12">
+                        <div className="bg-white rounded shadow p-2 position-relative">
+                            <img src={heroImg} className="img-fluid rounded" alt="Employer Hero Image" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        ):(
+            <section className="bg-half-260 pb-lg-0 pb-md-4 bg-primary d-table w-100" style={{backgroundImage:`url(${bg1})`}} id="home">
             <div className="bg-overlay bg-black" style={{opacity:'0.8'}}></div>
             <div className="container">
                 <div className="row g-4 position-relative z-1">
@@ -66,6 +94,8 @@ export default function Home(){
                 </div>
             </div>
         </section>
+        )}
+       
         <div className="position-relative">
             <div className="shape overflow-hidden text-white">
                 <svg viewBox="0 0 2880 250" fill="none" xmlns="http://www.w3.org/2000/svg">
