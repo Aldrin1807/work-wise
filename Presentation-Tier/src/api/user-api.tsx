@@ -10,6 +10,7 @@ const API_URL = import.meta.env.VITE_BackendLink;;
 
 export const Registration = async (form:FormData) => {
     try {
+      
         const response = await axios.post(`${API_URL}Auth/register-user`, form);
         console.log(response.data);
 
@@ -109,9 +110,18 @@ export const fetchJob = async (token: string,id :string) => {
     }
 };
 
-export const fetchPopularJobs = async () => {
+export const fetchJobs = async () => {
   try {
-    const response = await axios.get(`${API_URL}Jobs/get-popular-jobs`);
+    const response = await axios.get(`${API_URL}Jobs/get-jobs`);
+      console.log(response.data);
+      return response.data;
+    }catch (error) {
+      console.error(error);
+    }
+}
+export const fetchFilteredJobs = async (filter:any) => {
+  try {
+    const response = await axios.get(`${API_URL}Jobs/get-filtered-jobs?keyword=${filter.keyword??''}&location=${filter.location??''}&type=${filter.type??''}`);
       console.log(response.data);
       return response.data;
     }catch (error) {

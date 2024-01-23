@@ -15,8 +15,9 @@ import { FiSearch, FiClock, FiMapPin, FiDollarSign} from "../assets/icons/vander
 
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchPopularJobs } from "../api/user-api";
+import { fetchJobs} from "../api/user-api";
 import AboutTwo from "../components/aboutTwo";
+import { Button } from "react-bootstrap";
 
 
 export default function Home(){
@@ -29,12 +30,18 @@ export default function Home(){
     const[jobData,setJobData] = useState([] as any);
 
     useEffect(()=>{
-        const fetchJobs = async () => {
-            const response = await fetchPopularJobs();
+        const fetchData = async () => {
+            const response = await fetchJobs();
             setJobData(response);
         }
-        fetchJobs();
+        fetchData();
     },[])
+
+    const navigateTo = () => {
+        navigate(`/job-list/${query}`)
+    }
+
+    const[query,setQuery] = useState('');
     return(
         <>
         <Navbar navClass="defaultscroll sticky" navLight={true}/>
@@ -80,13 +87,15 @@ export default function Home(){
                                                     <label className="form-label d-none fs-6">Search :</label>
                                                     <div className="filter-search-form position-relative filter-border">
                                                         <FiSearch className="fea icon-20 icons"/>
-                                                        <input name="name" type="text" id="job-keyword" className="form-control filter-input-box bg-light border-0" placeholder="Search your keaywords"/>
+                                                        <input name="name" type="text" id="job-keyword" value={query} onChange={(e)=>setQuery(e.target.value)} className="form-control filter-input-box bg-light border-0" placeholder="Search your keywords"/>
                                                     </div>
                                                 </div>
                                             </div>
     
                                             <div className="col-lg-3 col-md-4 col-12">
-                                                <input type="submit" id="search" name="search" style={{height:'60px'}} className="btn btn-primary searchbtn w-100" value="Search"/>
+                                                <Button style={{height:'60px'}} className="btn btn-primary searchbtn w-100" onClick={navigateTo}>
+                                                    Search
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>

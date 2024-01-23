@@ -45,12 +45,12 @@ namespace API_Layer.Controllers
             }
         }
 
-        [HttpGet("get-popular-jobs")]
+        [HttpGet("get-jobs")]
         public async Task<IActionResult> GetPopularJobs()
         {
             try
             {
-                var jobs = await _service.GetPopularJobs();
+                var jobs = await _service.GetJobs();
                 return Ok(jobs);
             }
             catch (Exception ex)
@@ -60,6 +60,20 @@ namespace API_Layer.Controllers
             }
         }
 
+        [HttpGet("get-filtered-jobs")]
+        public async Task<IActionResult> GetFilteredJobs([FromQuery] string? keyword,[FromQuery] string? location, [FromQuery] string? type)
+        {
+            try
+            {
+                var jobs = await _service.GetFilteredJobs(keyword,location,type);
+                return Ok(jobs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
         [HttpPost("post-job")]
         public async Task<IActionResult> PostJob([FromBody] JobDTO request)
         {

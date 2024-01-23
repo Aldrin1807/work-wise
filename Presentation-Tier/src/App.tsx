@@ -35,6 +35,7 @@ function App() {
     { path: '/home', element: <Home /> },
     { path: '/job-categories', element: <JobCategories /> },
     { path: '/job-list', element: <JobList /> },
+    { path: '/job-list/:query', element: <JobList /> },
     { path: '/job-apply', element: <JobApply /> },
     { path: '/career', element: <Career /> },
     { path: '/job-detail/:id', element: <JobDetail /> },

@@ -11,7 +11,8 @@ namespace Bussiness_Logic_Layer.Services
         Task<Job> GetJob(string id);
         Task PostJob(JobDTO request);
         Task<List<Job>> GetEmployersJobs(string id);
-        Task<List<Job>> GetPopularJobs();
+        Task<List<Job>> GetJobs();
+        Task<List<Job>> GetFilteredJobs(string keyword,string location,string type);
     }
     public class JobsService:IJobsService
     {
@@ -60,7 +61,7 @@ namespace Bussiness_Logic_Layer.Services
             return jobs;
         }
 
-        public async Task<List<Job>> GetPopularJobs()
+        public async Task<List<Job>> GetJobs()
         {
             var jobs = await _context.Jobs.ToListAsync();
 
@@ -74,6 +75,40 @@ namespace Bussiness_Logic_Layer.Services
 
             return jobs;
         }
+
+        public async Task<List<Job>> GetFilteredJobs(string keyword, string location, string type)
+        {
+            var jobs = await _context.Jobs.ToListAsync();
+
+            foreach (var job in jobs)
+            {
+                var user = await _identity.GetUserById(job.CompanyId);
+                job.CompanyName = user.UserName;
+                job.CompanyLocation = user.Location;
+                job.CompanyPhoto = await _identity.GetUserPhoto(user);
+            }
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                jobs = jobs.Where(job =>
+                job.JobTitle.ToLower().Contains(keyword.ToLower()) ||
+                job.JobDescription.ToLower().Contains(keyword.ToLower()) ||
+                job.Skills.ToLower().Contains(keyword.ToLower())).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                jobs = jobs.Where(job => job.Location.Contains(location, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                jobs = jobs.Where(job => job.Type.Equals(type, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            return jobs;
+        }
+
         #endregion
 
         #region POST
@@ -102,6 +137,8 @@ namespace Bussiness_Logic_Layer.Services
             await _context.Jobs.AddAsync(_job);
             await _context.SaveChangesAsync();
         }
+
+        
         #endregion
     }
 }
