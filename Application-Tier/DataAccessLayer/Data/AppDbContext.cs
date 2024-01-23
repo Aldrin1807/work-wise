@@ -43,7 +43,7 @@ namespace DataAccessLayer.Data
 
             //Shume me shume per job application
             modelBuilder.Entity<JobApplication>()
-                .HasKey(up => new { up.CandidateId, up.JobId});
+                .HasKey(up => new { up.Id,up.CandidateId, up.JobId});
             modelBuilder.Entity<JobApplication>()
                 .HasOne(u => u.User)
                 .WithMany(p => p.JobApplications)

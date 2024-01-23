@@ -2,8 +2,9 @@
 {
     public class JobApplication
     {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Status { get; set; }
-        public string DateSubmited { get; set; }
+        public string DateSubmitted { get; set; }
         public string JobId { get; set; }
         public Job Job { get; set; }
         public string CandidateId { get; set; }

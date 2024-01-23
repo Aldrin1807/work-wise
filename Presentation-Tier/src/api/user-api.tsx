@@ -129,3 +129,37 @@ export const fetchFilteredJobs = async (filter:any) => {
     }
 }
 
+export const hasApplied = async (userId: string, jobId: string) => {
+  try {
+    const response = await axios.get(`${API_URL}Jobs/has-applied?userId=${userId}&jobId=${jobId}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export const ApplyJob = async (token: string, data: object) => {
+  try {
+    const response = await axios.post(`${API_URL}Jobs/add-application`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    if (response.data.status === "Success") {
+        await swal(
+        "Successfully applied!",
+        response.data.message,
+        "success"
+        );
+        return true
+    }
+    return false;
+  } catch (error) {
+    console.error(error);
+    await swal("Application failed", (error as any).response.data.message, "error");
+    return false;
+  }
+}

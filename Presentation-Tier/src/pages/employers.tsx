@@ -6,9 +6,6 @@ import Navbar from "../components/navbar";
 import Faq from "../components/faq";
 import Footer from "../components/footer";
 import ScrollTop from "../components/scrollTop";
-
-import { jobData } from "../data/data";
-
 import {FiMapPin} from '../assets/icons/vander'
 import { useEffect, useState } from "react";
 import { fetchEmployers } from "../api/employer-api";

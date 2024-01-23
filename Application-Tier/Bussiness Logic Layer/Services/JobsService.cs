@@ -3,6 +3,7 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static DataAccessLayer.Constants.Enumerations;
 
 namespace Bussiness_Logic_Layer.Services
 {
@@ -13,6 +14,10 @@ namespace Bussiness_Logic_Layer.Services
         Task<List<Job>> GetEmployersJobs(string id);
         Task<List<Job>> GetJobs();
         Task<List<Job>> GetFilteredJobs(string keyword,string location,string type);
+        Task AddJobApplication(JobApplicationDTO request);
+        Task<List<JobApplication>> GetCandidateApplications(string id);
+        Task RemoveApplication(string id);
+        Task<bool> HasApplied(string userId, string jobId);
     }
     public class JobsService:IJobsService
     {
@@ -109,6 +114,21 @@ namespace Bussiness_Logic_Layer.Services
             return jobs;
         }
 
+        public async Task<List<JobApplication>> GetCandidateApplications(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new Exception("Id was empty");
+            var applications = await _context.JobApplications.Where(j => j.CandidateId == id).ToListAsync();
+            return applications;
+        }
+
+        public async Task<bool> HasApplied(string userId,string jobId)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(jobId))
+                throw new Exception("Data provided was empty");
+            var application = await _context.JobApplications.FirstOrDefaultAsync(j => j.CandidateId == userId && j.JobId == jobId);
+            return application != null;
+        }
         #endregion
 
         #region POST
@@ -138,7 +158,41 @@ namespace Bussiness_Logic_Layer.Services
             await _context.SaveChangesAsync();
         }
 
-        
+        public async Task AddJobApplication(JobApplicationDTO request)
+        {
+            if (request == null)
+                throw new Exception("Request was empty");
+
+            var application = new JobApplication
+            {
+                CandidateId = request.CandidateId,
+                JobId = request.JobId,
+                Status = Enum.GetName(JobApplicationStatus.Submitted),
+                DateSubmitted = DateTime.UtcNow.ToShortDateString()
+            };
+
+            await _context.JobApplications.AddAsync(application);
+            await _context.SaveChangesAsync();
+        }
+
+        #endregion
+
+        #region DELETE
+        public async Task RemoveApplication(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new Exception("Id was empty");
+
+            var application = await _context.JobApplications.FirstOrDefaultAsync(j => j.Id == id);
+            if (application != null)
+            {
+                _context.JobApplications.Remove(application);
+                await _context.SaveChangesAsync();
+            }
+            else
+                throw new Exception("Couldnt find application");
+            
+        }
         #endregion
     }
 }

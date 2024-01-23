@@ -2,9 +2,6 @@ import { Link } from "react-router-dom";
 
 import about3 from "../assets/images/about/ab03.jpg"
 import about4 from "../assets/images/about/ab04.jpg"
-
-import { jobData } from "../data/data";
-
 import { useEffect, useState } from "react";
 import { fetchEmployers } from "../api/employer-api";
 

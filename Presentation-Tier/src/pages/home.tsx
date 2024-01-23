@@ -140,9 +140,9 @@ export default function Home(){
                 </div>
 
                 <div className="row g-4 mt-0">
-                    {jobData.slice(0,6).map((item:any,index:any) => {
+                    {jobData.slice(0,6).map((item:any) => {
                         return(
-                        <div className="col-lg-4 col-md-6 col-12" key={index}>
+                        <div className="col-lg-4 col-md-6 col-12" key={item.id}>
                             <div className="job-post rounded shadow bg-white">
                                 <div className="p-4">
                                     <Link to={`/job-detail/${item.id}`} className="text-dark title h5">{item.jobTitle}</Link>
@@ -152,7 +152,7 @@ export default function Home(){
                                     <ul className="list-unstyled d-flex justify-content-between align-items-center mb-0 mt-3">
                                         <div className="skills-list">
                                             {item.skills.split(', ').slice(0, 2).map((skill:any) => {
-                                                return <li className="list-inline-item"><span className="badge bg-soft-primary">{skill}</span></li>;
+                                                return <li key={skill} className="list-inline-item"><span className="badge bg-soft-primary">{skill}</span></li>;
                                             })}
                                         </div>
                                         <li className="list-inline-item"><span className="text-muted d-flex align-items-center small"><FiDollarSign className="fea icon-sm text-primary me-1"/>{item.salary}</span></li>

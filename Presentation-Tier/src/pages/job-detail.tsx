@@ -7,8 +7,11 @@ import ScrollTop from "../components/scrollTop";
 import {FiLayout, FiMapPin,FiUserCheck, FiClock, FiMonitor, FiBriefcase, FiBook, FiDollarSign} from "../assets/icons/vander"
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { fetchJob } from "../api/user-api";
+import { ApplyJob, fetchJob , hasApplied} from "../api/user-api";
 import { fetchEmployer } from "../api/employer-api";
+import swal from "sweetalert";
+import { Button } from "react-bootstrap";
+
 
 export default function JobDetail() {
     const user = useSelector((state: any) => state.user);
@@ -33,14 +36,21 @@ export default function JobDetail() {
         description: "",
         jobs: [] as any
     });
+    const[apply,setApply] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetchJob(user.token, id ?? "");
             setJobData(response);
         };
-
         fetchData();
+
+        const fetchHasApplied = async () => {
+            const appliedValue = await hasApplied(user.userId, id??'');
+            setApply(appliedValue);
+        }
+        fetchHasApplied();
+        
     }, [id]);
     useEffect(() => {
         if(jobData.companyId){
@@ -51,6 +61,23 @@ export default function JobDetail() {
            fetchCompany();
         }
     }, [jobData]);
+
+    const handleApply = async () => {
+        if (!user.isAuthenticated) {
+            await swal("Login Required", "Please login to apply for this job", "error");
+            return;
+        }
+        const data = {
+            jobId: id,
+            candidateId: user.userId
+        }
+        console.log(data);
+
+        const response = await ApplyJob(user.token, data);
+        if (response) {
+            setApply(true);
+        }
+    }
 
 
     return(
@@ -85,7 +112,9 @@ export default function JobDetail() {
                                         ))}
                         </div>
                         <div className="mt-4">
-                            <Link to="/job-apply" className="btn btn-outline-primary">Apply Now <i className="mdi mdi-send"></i></Link>
+                            <Button className="btn btn-outline primary" disabled={apply} onClick={handleApply}>
+                                {apply ? 'Already Applied' : 'Apply Now'} <i className="mdi mdi-send"></i>
+                            </Button>
                         </div>
                     </div>
 
