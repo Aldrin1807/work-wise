@@ -9,6 +9,7 @@ namespace Bussiness_Logic_Layer.Services
     public interface IIdentityService
     {
         Task<User> GetUserById(string id);
+        Task<User> GetEmployerById(string id);
         string GetUserClaimValue(IEnumerable<Claim> claims, string claimType);
         Task<string> GetUserPhoto(User user);
     }
@@ -26,6 +27,17 @@ namespace Bussiness_Logic_Layer.Services
             if (user == null)
             {
                 throw new Exception("User does not exist");
+            }
+
+            return user;
+        }
+        public async Task<User> GetEmployerById(string id)
+        {
+            var users = await _userManager.GetUsersInRoleAsync("Employer");
+            var user = users.FirstOrDefault(u=>u.Id == id);
+            if (user == null)
+            {
+                throw new Exception("Employer does not exist");
             }
 
             return user;

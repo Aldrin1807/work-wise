@@ -29,6 +29,20 @@ namespace API_Layer.Controllers
                 { Status = "Error", Message = ex.Message });
             }
         }
+        [HttpGet("get-employers")]
+        public async Task<IActionResult> GetEmployers()
+        {
+            try
+            {
+                var employers = await _service.GetEmployers();
+                return Ok(employers);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
 
     }
 }

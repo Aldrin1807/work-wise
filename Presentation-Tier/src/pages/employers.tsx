@@ -10,8 +10,19 @@ import ScrollTop from "../components/scrollTop";
 import { jobData } from "../data/data";
 
 import {FiMapPin} from '../assets/icons/vander'
+import { useEffect, useState } from "react";
+import { fetchEmployers } from "../api/employer-api";
 
 export default function Employers(){
+    const[employersData,setEmployersData] = useState([] as any);
+
+    useEffect(()=>{
+        const fetchData = async () => {
+            const response = await fetchEmployers();
+            setEmployersData(response);
+        }
+        fetchData();
+    },[])
     return(
         <>
         <Navbar navClass="defaultscroll sticky" navLight={true}/>
@@ -47,23 +58,23 @@ export default function Employers(){
         <section className="section">
             <div className="container">
                 <div className="row g-4 gy-5">
-                    {jobData.map((item,index)=>{
+                    {employersData.map((item:any,index:any)=>{
                         return(
                             <div className="col-lg-3 col-md-4 col-sm-6 col-12" key={index}>
                                 <div className="employer-card position-relative bg-white rounded shadow p-4 mt-3">
                                     <div className="employer-img d-flex justify-content-center align-items-center bg-white shadow-md rounded">
-                                        <img src={item.image} className="avatar avatar-ex-small" alt=""/>
+                                        <img src={`data:image/png;base64, ${item.photo}`} className="rounded-pill shadow border border-3 avatar avatar-small" alt=""/>
                                     </div>
 
                                     <div className="content mt-3">
-                                        <Link to={`/employer-profile/${item.id}`} className="title text-dark h5">{item.name}</Link>
+                                        <Link to={`/employer-profile/${item.id}`} className="title text-dark h5">{item.companyName}</Link>
 
-                                        <p className="text-muted mt-2 mb-0">Digital Marketing Solutions for Tomorrow</p>
+                                        <p className="text-muted mt-2 mb-0">{item.description.slice(0, 40)}...</p>
                                     </div>
 
                                     <ul className="list-unstyled d-flex justify-content-between align-items-center border-top mt-3 pt-3 mb-0">
-                                        <li className="text-muted d-inline-flex align-items-center"><FiMapPin className="fea icon-sm me-1 align-middle"/>{item.country}</li>
-                                        <li className="list-inline-item text-primary fw-medium">{item.vacancy} Jobs</li>
+                                        <li className="text-muted d-inline-flex align-items-center"><FiMapPin className="fea icon-sm me-1 align-middle"/>{item.location}</li>
+                                        <li className="list-inline-item text-primary fw-medium">{item.jobs.length} Vacancies</li>
                                     </ul>
                                 </div>
                             </div>
@@ -71,7 +82,7 @@ export default function Employers(){
                     })}
                 </div>
 
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-12 mt-4 pt-2">
                         <ul className="pagination justify-content-center mb-0">
                             <li className="page-item">
@@ -89,7 +100,8 @@ export default function Employers(){
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div> */}
+                <hr />
             </div>
             <div className="container mt-100 mt-60">
                 <Faq/>

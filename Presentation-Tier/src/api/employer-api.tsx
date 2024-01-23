@@ -86,3 +86,13 @@ export const deleteJob = async (token: string,id :string) => {
       console.error(error);
     }
 }
+
+export const fetchEmployers = async () => {
+  try {
+    const response = await axios.get(`${API_URL}Employer/get-employers`);
+      console.log(response.data);
+      return response.data;
+    }catch (error) {
+      console.error(error);
+    }
+}
