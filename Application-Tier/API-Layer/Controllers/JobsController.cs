@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Bussiness_Logic_Layer.DTOs;
 using Bussiness_Logic_Layer.Services;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ namespace API_Layer.Controllers
             }
         }
 
-        [HttpGet("get-jobs/{id}")]
+        [HttpGet("get-my-jobs/{id}")]
         public async Task<IActionResult> GetEmployersJobs(string id)
         {
             try
@@ -83,6 +84,20 @@ namespace API_Layer.Controllers
             {
                 var application = await _service.GetCandidateApplications(id);
                 return Ok(application);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
+        [HttpGet("get-job-applications/{id}")]
+        public async Task<IActionResult> GetJobApplications(string id)
+        {
+            try
+            {
+                var response = await _service.GetJobApplications(id);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -146,6 +161,37 @@ namespace API_Layer.Controllers
                 await _service.RemoveApplication(id);
                 return Ok(new Response
                 { Status = "Success", Message = "Removed succesfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
+        [HttpDelete("delete-job/{id}")]
+        public async Task<IActionResult> DeleteJob(string id)
+        {
+            try
+            {
+                await _service.DeleteJob(id);
+                return Ok(new Response
+                { Status = "Success", Message = "Removed succesfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
+
+        [HttpPut("update-job-application/{id}")]
+        public async Task<IActionResult> UpdateJobApplication(string id,[FromBody]string status)
+        {
+            try
+            {
+                await _service.UpdateJobApplication(id,status);
+                return Ok(new Response
+                { Status = "Success", Message = "Succesfully updated" });
             }
             catch (Exception ex)
             {

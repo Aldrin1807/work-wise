@@ -60,19 +60,22 @@ export const postJob = async (form: any, token: string) => {
     return false;
   }
 };
-export const fetchMyJobs = async (token: string,id :string) => {
+export const fetchMyJobs = async (token: string, id: string) => {
   try {
-    const response = await axios.get(`${API_URL}Jobs/get-jobs/${id}`, {
+    console.log('Before API call');
+    const response = await axios.get(`${API_URL}Jobs/get-my-jobs/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
-      console.log(response.data);
-      return response.data;
-    }catch (error) {
-      console.error(error);
-    }
+    console.log('After API call', response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    console.log('API call failed');
+  }
 };
+
 export const deleteJob = async (token: string,id :string) => {
   try {
     const response = await axios.delete(`${API_URL}Jobs/delete-job/${id}`, {
@@ -81,9 +84,15 @@ export const deleteJob = async (token: string,id :string) => {
       }
     });
       console.log(response.data);
-      return response.data;
+      if (response.data.status === "Success") {
+        await swal(
+        "Job deleted succesfully!",
+        response.data.message,
+        "success"
+        );
+      }
     }catch (error) {
-      console.error(error);
+      await swal("Delete failed", (error as any).response.data.message, "error");
     }
 }
 
@@ -95,4 +104,34 @@ export const fetchEmployers = async () => {
     }catch (error) {
       console.error(error);
     }
+}
+export const fetchCandidates = async (token: string, id: string) => {
+  try {
+    const response = await axios.get(`${API_URL}Jobs/get-job-applications/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+      console.log(response.data);
+      return response.data;
+    }catch (error) {
+      console.error(error);
+    }
+}
+export const updateStatus = async (token: string, id: string, status: string) => {
+  try {
+    const response = await axios.put(`${API_URL}Jobs/update-job-application/${id}`, status, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'  // Set content type to JSON
+      }
+    });
+
+    if (response.data.status === "Success") {
+      await swal("Successfully updated!", response.data.message, "success");
+    }
+  } catch (error) {
+    await swal("Update failed", (error as any).response.data.message, "error");
+    console.error(error);
+  }
 }

@@ -181,8 +181,7 @@ export default function JobList(){
                                     </div>
 
                                     <div className="mt-3 mt-md-0">
-                                        <Link to="" className="btn btn-sm btn-icon btn-pills btn-soft-primary bookmark"><FiBookmark className="icons"/></Link>
-                                        <Link to={`/job-detail/${item.id}`} className="btn btn-sm btn-primary w-full ms-md-1">Apply Now</Link>
+                                        <Link to={`/job-detail/${item.id}`} className="btn btn-sm btn-primary w-full ms-md-1">See more</Link>
                                     </div>
                                 </div>
                             </div>

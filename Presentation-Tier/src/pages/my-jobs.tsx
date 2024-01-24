@@ -16,7 +16,10 @@ import { deleteJob, fetchMyJobs } from "../api/employer-api";
 
 export default function MyJobs(){
     const user = useSelector((state: any) => state.user);
-    const [jobData, setJobData] = useState([] as any);
+    const [jobData, setJobData] = useState([] as any[]);
+
+
+    const[changed,setChanged] = useState(false);
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -24,7 +27,7 @@ export default function MyJobs(){
             setJobData(response);
         }
         fetchJobs();
-    }, []);
+    }, [changed]);
 
     const handleDelete = async (id: string) => {
         swal({
@@ -35,16 +38,8 @@ export default function MyJobs(){
           dangerMode: true,
         }).then(async (willDelete) => {
           if (willDelete) {
-            try {
-              const result = await deleteJob(user.token, id);
-              swal("Poof! The job has been deleted!", {
-                icon: "success",
-              });
-              // Handle the result if needed
-              console.log(result);
-            } catch (error) {
-            swal("Oops! Something went wrong.", (error as any).message, "error");
-            }
+              await deleteJob(user.token, id);
+              setChanged(!changed);
           } else {
             swal("Job is safe!");
           }
@@ -78,7 +73,7 @@ export default function MyJobs(){
 
             <div className="container mt-60">
                 <div className="row g-4">
-                    {jobData.map((item:any,index:any)=>{
+                    {jobData && jobData.map((item:any,index:any)=>{
                         return(
                         <div className="col-lg-4 col-md-6 col-12" key={index}>
                             <div className="job-post job-type-three rounded shadow bg-white p-4">
@@ -95,8 +90,15 @@ export default function MyJobs(){
                                                 <CiTrash className="icons" onClick={() => handleDelete(item.id)} />
                                             </Link>
                                         </li>
-
                                     </ul>
+                                    <div className="d-flex justify-content-between mb-0 mt-1">
+                                        <p>{item.applicationsNo} applicants</p>
+                                        {item.applicationsNo > 0 && (
+                                            <Link to={`/candidates/${item.id}`}>
+                                                See candidates
+                                            </Link>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +106,7 @@ export default function MyJobs(){
                     })}
                 </div>
 
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-12 mt-4 pt-2">
                         <ul className="pagination justify-content-center mb-0">
                             <li className="page-item">
@@ -122,7 +124,7 @@ export default function MyJobs(){
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div> */}
             </div>
             <AboutTwo/>
         </section>

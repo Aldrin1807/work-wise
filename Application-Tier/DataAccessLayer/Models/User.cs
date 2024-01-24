@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Constants;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DataAccessLayer.Models
 {
@@ -12,6 +13,7 @@ namespace DataAccessLayer.Models
 
         // Navigation properties
         public List<Notification> Notifications { get; set; }
+        [JsonIgnore]
         public List<JobApplication> JobApplications { get; set; }
         public List<Job> JobsPosted { get; set; }// This is if the user is a company
 

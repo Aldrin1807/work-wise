@@ -3,7 +3,9 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static DataAccessLayer.Constants.Enumerations;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Bussiness_Logic_Layer.Services
 {
@@ -18,6 +20,9 @@ namespace Bussiness_Logic_Layer.Services
         Task<List<JobApplication>> GetCandidateApplications(string id);
         Task RemoveApplication(string id);
         Task<bool> HasApplied(string userId, string jobId);
+        Task DeleteJob(string id);
+        Task<List<JobApplication>> GetJobApplications(string id);
+        Task UpdateJobApplication(string id, string status);
     }
     public class JobsService:IJobsService
     {
@@ -61,6 +66,7 @@ namespace Bussiness_Logic_Layer.Services
                 job.CompanyName = user.UserName;
                 job.CompanyLocation = user.Location;
                 job.CompanyPhoto = await _identity.GetUserPhoto(user);
+                job.ApplicationsNo = await _context.JobApplications.Where(j => j.JobId == job.Id).CountAsync();
             }
 
             return jobs;
@@ -129,6 +135,28 @@ namespace Bussiness_Logic_Layer.Services
             var application = await _context.JobApplications.FirstOrDefaultAsync(j => j.CandidateId == userId && j.JobId == jobId);
             return application != null;
         }
+        public async Task<List<JobApplication>> GetJobApplications(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new Exception("Id was empty");
+            var applications = await _context.JobApplications.Where(j => j.JobId == id).ToListAsync();
+            foreach(var application in applications)
+            {
+                var user = await _identity.GetUserById(application.CandidateId);
+                var userClaims = await _userManager.GetClaimsAsync(user);
+
+                user.Claims = userClaims
+                .Select(claim => new IdentityUserClaim<string>
+                {
+                    ClaimType = claim.Type,
+                    ClaimValue = claim.Value
+                })
+                .ToList();
+
+                application.User = user;
+            }
+            return applications;
+        }
         #endregion
 
         #region POST
@@ -177,7 +205,34 @@ namespace Bussiness_Logic_Layer.Services
 
         #endregion
 
+        #region PUT
+        public async Task UpdateJobApplication(string id,string status)
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(status))
+                throw new Exception("Request data was empty");
+            var application = await _context.JobApplications.FirstOrDefaultAsync(j=>j.Id == id);
+            if (application == null)
+                throw new Exception("Application does not exist");
+            application.Status = status;
+            _context.Update(application);
+            await _context.SaveChangesAsync();
+        }
+        #endregion
+
         #region DELETE
+        public async Task DeleteJob(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new Exception("Id was empty");
+            var job = await _context.Jobs.FirstOrDefaultAsync(j => j.Id == id);
+            if (job != null)
+            {
+                _context.Jobs.Remove(job);
+                await _context.SaveChangesAsync();
+            }
+            else
+                throw new Exception("Couldnt find job");
+        }
         public async Task RemoveApplication(string id)
         {
             if (string.IsNullOrEmpty(id))

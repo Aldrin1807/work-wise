@@ -31,6 +31,8 @@ namespace DataAccessLayer.Models
 
         [NotMapped]
         public string? CompanyPhoto { get; set; }
+        [NotMapped]
+        public int? ApplicationsNo { get; set; }
 
     }
 }

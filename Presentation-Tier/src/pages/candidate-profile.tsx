@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import bg1 from "../assets/images/hero/bg5.jpg"
 
 import Navbar from "../components/navbar";
@@ -65,7 +65,7 @@ export default function CandidateProfile(){
                                     <img src={`data:image/png;base64, ${userData.photo}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
 
                                     <div className="ms-2">
-                                        <h5 className="mb-0">Mr. {userData?.firstName +' '+ userData?.lastName}</h5>
+                                        <h5 className="mb-0">{userData?.firstName +' '+ userData?.lastName}</h5>
                                         <p className="text-muted mb-0">{userData.position}</p>
                                     </div>
                                 </div>

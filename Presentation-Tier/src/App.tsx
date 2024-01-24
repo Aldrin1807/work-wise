@@ -59,7 +59,7 @@ function App() {
 
   const employerRoutes = [
     ...commonRoutes,
-    { path: '/candidates', element: <Candidates /> },
+    { path: '/candidates/:id', element: <Candidates /> },
     { path: '/employer-profile/:id', element: <EmployerProfile /> },
     { path: '/candidate-profile/:id', element: <CandidateProfile /> },
     { path: '/job-post', element: <JobPost /> },

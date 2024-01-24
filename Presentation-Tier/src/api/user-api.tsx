@@ -163,3 +163,26 @@ export const ApplyJob = async (token: string, data: object) => {
     return false;
   }
 }
+export const RemoveApplication = async (token: string, id: string) => {
+  try {
+    const response = await axios.delete(`${API_URL}Jobs/remove-application/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    if (response.data.status === "Success") {
+        await swal(
+        "Successfully removed!",
+        response.data.message,
+        "success"
+        );
+        return true
+    }
+    return false;
+  } catch (error) {
+    console.error(error);
+    await swal("Remove failed", (error as any).response.data.message, "error");
+    return false;
+  }
+}

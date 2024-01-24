@@ -1,4 +1,7 @@
-﻿namespace DataAccessLayer.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace DataAccessLayer.Models
 {
     public class JobApplication
     {

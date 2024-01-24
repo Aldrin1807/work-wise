@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import bg1 from "../assets/images/hero/bg.jpg"
 
@@ -6,10 +6,75 @@ import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import ScrollTop from "../components/scrollTop";
 
-import { candidatesData } from "../data/data";
-import {FiMessageCircle} from "../assets/icons/vander"
+import { fetchCandidates, updateStatus } from "../api/employer-api";
+import swal from 'sweetalert';
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { Dropdown } from "react-bootstrap";
+import { RemoveApplication } from "../api/user-api";
 
 export default function Candidates(){
+    const user = useSelector((state: any) => state.user);
+    let params = useParams();
+    let id = params.id
+
+    const [candidateData, setCandidateData] = useState([] as any[]);
+    const [changed, setChanged] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetchCandidates(user.token, id??'');
+            setCandidateData(response);
+        }
+        fetchData();
+    
+    },[changed])
+    
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "Submitted":
+                return "bg-soft-warning text-warning";
+            case "Application Rejected":
+                return "bg-soft-danger text-danger";
+            case "Accepted":
+                return "bg-soft-success text-success";
+            default:
+                return "bg-soft-primary text-primary";
+        }
+    }
+
+    const handleStatusChange = async (status: string, id: string) => {
+        const confirmTitle = status === "RemoveApplication" ? "Delete Application?" : "Modify Status?";
+        const confirmText = status === "RemoveApplication"
+            ? "Once deleted, you will not be able to recover this application!"
+            : "Are you sure you want to modify the status?";
+    
+        const confirmIcon = status === "RemoveApplication" ? "warning" : "info";
+    
+        const confirmButtonText = status === "RemoveApplication" ? "Delete" : "Yes";
+    
+        const shouldProceed = await swal({
+            title: confirmTitle,
+            text: confirmText,
+            icon: confirmIcon,
+            buttons: ["Cancel", confirmButtonText],
+            dangerMode: status === "RemoveApplication",
+        });
+    
+        if (shouldProceed) {
+            if (status === "RemoveApplication") {
+                await RemoveApplication(user.token, id);
+            } else {
+                console.log(`Updating status to ${status} for id:`, id); // Add this line for debugging
+                await updateStatus(user.token, id, status);
+            }
+            setChanged(!changed);
+        } else {
+            swal("Action Canceled", "Application is safe!", "info");
+        }
+    };
+    
+    
     return(
         <>
         <Navbar navClass="defaultscroll sticky" navLight={true}/>
@@ -45,44 +110,59 @@ export default function Candidates(){
         <section className="section">
             <div className="container">
                 <div className="row g-4">
-                    {candidatesData.map((item,index)=>{
+                    {candidateData.map((item,index)=>{
+                            const userPhotoClaim = item.user.claims.find((claim: any) => claim.claimType === "Photo")?.claimValue;
+                            const positionClaim = item.user.claims.find((claim: any) => claim.claimType === "Position")?.claimValue;
+                            const skillsClaim = item.user.claims.find((claim: any) => claim.claimType === "Skills")?.claimValue;
+                        
                         return(
+                            
                             <div className="col-lg-3 col-md-4 col-sm-6 col-12" key={index}>
                                 <div className="candidate-card position-relative overflow-hidden text-center shadow rounded p-4">
-                                    {item.rate === true ? 
-                                    <div className="ribbon ribbon-left overflow-hidden"><span className="text-center d-block bg-warning shadow small h6"><i className="mdi mdi-star"></i></span></div> : ''
-                                    }
+
                                     <div className="content">
-                                        <img src={item.image} className="avatar avatar-md-md rounded-pill shadow-md" alt=""/>
+                                        <img src={`data:image/png;base64, ${userPhotoClaim}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
 
                                         <div className="mt-3">
-                                            <Link to={`/candidate-profile/${item.id}`} className="title h5 text-dark">{item.name}</Link>
-                                            <p className="text-muted mt-1">{item.post}</p>
+                                            <Link to={`/candidate-profile/${item.candidateId}`} className="title h5 text-dark">{item.user.firstName +' '+ item.user.lastName}</Link>
+                                            <p className="text-muted mt-1">{positionClaim}</p>
+                                            <p className="text-muted mt-1">{item.user.email}</p>
 
-                                            <span className="badge bg-soft-primary rounded-pill">Design</span>
-                                            <span className="badge bg-soft-primary rounded-pill">UI</span>
-                                            <span className="badge bg-soft-primary rounded-pill">UX</span>
-                                            <span className="badge bg-soft-primary rounded-pill">Digital</span>
+
+                                            {skillsClaim && skillsClaim.split(',').map((skill: string, index: number) => (
+                                                <span key={index} className="badge bg-soft-primary rounded-pill">{skill.trim()}</span>
+                                            ))}
+
                                         </div>
 
                                         <div className="mt-2 d-flex align-items-center justify-content-between">
+                                           
                                             <div className="text-center">
-                                                <p className="text-muted fw-medium mb-0">Salary:</p>
-                                                <p className="mb-0 fw-medium">{item.salary}</p>
-                                            </div>
-
-                                            <div className="text-center">
-                                                <p className="text-muted fw-medium mb-0">Experience:</p>
-                                                <p className="mb-0 fw-medium">{item.experience}</p>
+                                                <p className={`mb-0 fw-medium badge ${getStatusColor(item.status)}`}>Status: {item.status}</p>
+                                                <p className="text-muted fw-medium mb-0">Date Submitted: {item.dateSubmitted}</p>
                                             </div>
                                         </div>
+                                    
                                         
                                         <div className="mt-3">
-                                            <Link to={`/candidate-profile/${item.id}`} className="btn btn-sm btn-primary me-1">View Profile</Link>
-                                            <Link to="/contactus" className="btn btn-sm btn-icon btn-soft-primary"><FiMessageCircle className="icons"/></Link>
+                                            <Link to={`/candidate-profile/${item.candidateId}`} className="btn btn-sm btn-primary me-1">View Profile</Link>
                                         </div>
 
-                                        <Link to="" className="like"><i className="mdi mdi-heart align-middle fs-4"></i></Link>
+                                        <div className="mt-2 d-flex align-items-center justify-content-between" style={{ position: 'absolute', top: '8px', right: '12px', color:'black' }}>
+                                            <div className="text-center">
+                                                <Dropdown>
+                                                    <Dropdown.Toggle variant="link" id={`dropdown-${index}`} className="dots-icon">
+                                                        <i className="mdi mdi-dots-vertical fs-4"></i>
+                                                    </Dropdown.Toggle>
+
+                                                    <Dropdown.Menu>
+                                                        <Dropdown.Item onClick={() => handleStatusChange('RemoveApplication', item.id)}>Remove Application</Dropdown.Item>
+                                                        <Dropdown.Item disabled={item.status=="Application Rejected"} onClick={() => handleStatusChange('Application Rejected', item.id)}>Reject Application</Dropdown.Item>
+                                                        <Dropdown.Item disabled={item.status=="Accepted"} onClick={() => handleStatusChange('Accepted', item.id)}>Accept for Interview</Dropdown.Item>
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +170,7 @@ export default function Candidates(){
                     })}
                 </div>
 
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-12 mt-4 pt-2">
                         <ul className="pagination justify-content-center mb-0">
                             <li className="page-item">
@@ -108,7 +188,7 @@ export default function Candidates(){
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div> */}
             </div>
         </section>
         <Footer top={true}/>

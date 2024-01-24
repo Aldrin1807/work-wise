@@ -111,11 +111,13 @@ export default function JobDetail() {
                                             <span key={index} className="badge bg-primary me-2 mb-2">{skill.trim()}</span>
                                         ))}
                         </div>
+                        {user.userId != jobData.companyId &&(
                         <div className="mt-4">
                             <Button className="btn btn-outline primary" disabled={apply} onClick={handleApply}>
                                 {apply ? 'Already Applied' : 'Apply Now'} <i className="mdi mdi-send"></i>
                             </Button>
                         </div>
+                        )}
                     </div>
 
                     <div className="col-lg-4 col-md-6 col-12">
@@ -129,7 +131,9 @@ export default function JobDetail() {
                                     <FiLayout className="fea icon-ex-md me-3"/>
                                     <div className="flex-1">
                                         <h6 className="widget-title mb-0">Company Name:</h6>
+                                        <Link to={`/employer-profile/${jobData.companyId}`}>
                                         <small className="text-primary mb-0">{companyData && companyData.companyName}</small>
+                                        </Link>
                                     </div>
                                 </div>
 
