@@ -139,7 +139,7 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                                                 {user.role==="Employer"?(
                                                    ''
                                                 ):(
-                                                    <Link to="/candidate-profile-setting/1" className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
+                                                    <Link to="/my-applications" className="dropdown-item fw-medium fs-6" onClick={handleDropdownItemClick}>
                                                         <FaCheck  className="fea icon-sm me-2 align-middle" />Applied Jobs
                                                     </Link>
                                                 )}
@@ -159,12 +159,11 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                 <ul className="navigation-menu nav-right nav-light">
                     {user.role==="Employer"?(
                         <>
-                            <li className={`${["job-categories", "job-list","job-detail", "job-apply","job-post" ].includes(manu)? "active" : ""} parent-menu-item`}>
-                                <Link to="/my-jobs"> My Jobs </Link><span className="menu-arrow"></span> 
+                            <li className={`${["job-list"].includes(manu)? "active" : ""} parent-menu-item`}>
+                                <Link to="/job-list"> Search </Link><span className="menu-arrow"></span> 
                             </li>
-
-                            <li className={`${["candidates", "candidate-list" ].includes(manu)? "active" : ""} parent-menu-item`}>
-                                <Link to="/candidates"> Candidates </Link><span className="menu-arrow"></span> 
+                            <li className={`${["job-categories", "job-detail", "job-apply", "job-post","my-jobs" ].includes(manu)? "active" : ""} parent-menu-item`}>
+                                <Link to="/my-jobs"> My Jobs </Link><span className="menu-arrow"></span> 
                             </li>
                         </>
                     ):(

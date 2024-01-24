@@ -26,6 +26,7 @@ import Terms from "./pages/terms";
 import Privacy from "./pages/privacy";
 import ContactUs from "./pages/contactus";
 import Error from "./pages/error";
+import MyApplications from './pages/my-applications';
 
 function App() {
   const user = useSelector((state: any) => state.user);
@@ -55,6 +56,7 @@ function App() {
     ...commonRoutes,    
     { path: '/employer-profile/:id', element: <EmployerProfile /> },
     { path: '/candidate-profile/:id', element: <CandidateProfile /> },
+    { path: '/my-applications', element: <MyApplications /> }
   ];
 
   const employerRoutes = [

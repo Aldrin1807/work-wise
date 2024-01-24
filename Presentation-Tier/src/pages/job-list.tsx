@@ -7,7 +7,7 @@ import AboutTwo from "../components/aboutTwo";
 import Footer from "../components/footer";
 import ScrollTop from "../components/scrollTop";
 
-import {FiClock,FiMapPin, FiBookmark, FiBriefcase, FiSearch} from "../assets/icons/vander"
+import {FiClock,FiMapPin, FiBriefcase, FiSearch} from "../assets/icons/vander"
 import { useEffect, useState } from "react";
 import { fetchFilteredJobs,  fetchJobs } from "../api/user-api";
 

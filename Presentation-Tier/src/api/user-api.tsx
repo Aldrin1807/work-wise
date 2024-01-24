@@ -186,3 +186,16 @@ export const RemoveApplication = async (token: string, id: string) => {
     return false;
   }
 }
+export const fetchApplications = async (token: string, id: string) => {
+  try {
+    const response = await axios.get(`${API_URL}Jobs/get-candidate-applications/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}

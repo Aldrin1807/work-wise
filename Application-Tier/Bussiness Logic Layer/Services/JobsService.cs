@@ -125,6 +125,24 @@ namespace Bussiness_Logic_Layer.Services
             if (string.IsNullOrEmpty(id))
                 throw new Exception("Id was empty");
             var applications = await _context.JobApplications.Where(j => j.CandidateId == id).ToListAsync();
+            foreach (var application in applications)
+            {
+                var job = await _context.Jobs.FirstOrDefaultAsync(j=>j.Id == application.JobId);
+                var user = await _identity.GetUserById(job.CompanyId);
+                var userClaims = await _userManager.GetClaimsAsync(user);
+
+                user.Claims = userClaims
+                .Select(claim => new IdentityUserClaim<string>
+                {
+                    ClaimType = claim.Type,
+                    ClaimValue = claim.Value
+                })
+                .ToList();
+
+                application.Job = job;
+                application.User = user;
+            }
+
             return applications;
         }
 

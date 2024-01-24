@@ -20,7 +20,7 @@ namespace DataAccessLayer.Models
         public string CompanyId { get; set; }
         [JsonIgnore]
         public User Company { get; set; }
-
+        [JsonIgnore]
         public List<JobApplication> Applications { get; set; }
 
         [NotMapped]

@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, } from "react-router-dom";
 
 import bg1 from "../assets/images/hero/bg.jpg"
 
@@ -6,25 +6,23 @@ import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import ScrollTop from "../components/scrollTop";
 
-import { fetchCandidates, updateStatus } from "../api/employer-api";
 import swal from 'sweetalert';
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { Dropdown } from "react-bootstrap";
-import { RemoveApplication } from "../api/user-api";
+import { RemoveApplication, fetchApplications } from "../api/user-api";
 
 export default function Candidates(){
     const user = useSelector((state: any) => state.user);
-    let params = useParams();
-    let id = params.id
 
-    const [candidateData, setCandidateData] = useState([] as any[]);
+
+    const [applicationData, setApplicationData] = useState([] as any[]);
     const [changed, setChanged] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetchCandidates(user.token, id??'');
-            setCandidateData(response);
+            const response = await fetchApplications(user.token, user.userId);
+            setApplicationData(response);
         }
         fetchData();
     
@@ -44,36 +42,23 @@ export default function Candidates(){
     }
 
     const handleStatusChange = async (status: string, id: string) => {
-        const confirmTitle = status === "RemoveApplication" ? "Delete Application?" : "Modify Status?";
-        const confirmText = status === "RemoveApplication"
-            ? "Once deleted, you will not be able to recover this application!"
-            : "Are you sure you want to modify the status?";
-    
-        const confirmIcon = status === "RemoveApplication" ? "warning" : "info";
-    
-        const confirmButtonText = status === "RemoveApplication" ? "Delete" : "Yes";
-    
+
         const shouldProceed = await swal({
-            title: confirmTitle,
-            text: confirmText,
-            icon: confirmIcon,
-            buttons: ["Cancel", confirmButtonText],
-            dangerMode: status === "RemoveApplication",
+            title: 'Withdraw Application?',
+            text: 'Once withdraw, you will not be able to recover this application!',
+            icon: 'warning',
+            buttons: ["Cancel", 'Withdraw'],
+            dangerMode: true,
         });
     
         if (shouldProceed) {
-            if (status === "RemoveApplication") {
-                await RemoveApplication(user.token, id);
-            } else {
-                console.log(`Updating status to ${status} for id:`, id); // Add this line for debugging
-                await updateStatus(user.token, id, status);
-            }
+            await RemoveApplication(user.token, id);
             setChanged(!changed);
         } else {
             swal("Action Canceled", "Application is safe!", "info");
         }
     };
-    
+
     const [filterStatus, setFilterStatus] = useState("All"); // Default to show all applications
 
 
@@ -81,10 +66,11 @@ export default function Candidates(){
         setFilterStatus(status);
     };
 
-    const filteredCandidates = filterStatus === "All"
-        ? candidateData
-        : candidateData.filter((item) => item.status === filterStatus);
+    const filteredApplications = filterStatus === "All"
+        ? applicationData
+        : applicationData.filter((item) => item.status === filterStatus);
 
+    
     return(
         <>
         <Navbar navClass="defaultscroll sticky" navLight={true}/>
@@ -95,7 +81,7 @@ export default function Candidates(){
                 <div className="row mt-5 justify-content-center">
                     <div className="col-12">
                         <div className="title-heading text-center">
-                            <h5 className="heading fw-semibold mb-0 sub-heading text-white title-dark">Candidates</h5>
+                            <h5 className="heading fw-semibold mb-0 sub-heading text-white title-dark">My Applications</h5>
                         </div>
                     </div>
                 </div>
@@ -104,11 +90,12 @@ export default function Candidates(){
                     <nav aria-label="breadcrumb" className="d-block">
                         <ul className="breadcrumb breadcrumb-muted mb-0 p-0">
                             <li className="breadcrumb-item"><Link to="/">Jobnova</Link></li>
-                            <li className="breadcrumb-item active" aria-current="page">Candidates</li>
+                            <li className="breadcrumb-item active" aria-current="page">My Applications</li>
                         </ul>
                     </nav>
                 </div>
             </div>
+
         </section>
         <div className="position-relative">
             <div className="shape overflow-hidden text-white">
@@ -135,13 +122,13 @@ export default function Candidates(){
                         </Dropdown>
                     </div>
                 </div>
+
                 <div className="row g-4" style={{minHeight:'30rem'}}>
                     <p>Showing results for <u>{filterStatus}</u></p>
-                    {filteredCandidates.length === 0 && <p className="text-center">No candidates found</p>}
-                    {filteredCandidates.map((item,index)=>{
+                    {filteredApplications.length === 0 && <p className="text-center">No applications found</p>}
+                    {filteredApplications.map((item,index)=>{
                             const userPhotoClaim = item.user.claims.find((claim: any) => claim.claimType === "Photo")?.claimValue;
-                            const positionClaim = item.user.claims.find((claim: any) => claim.claimType === "Position")?.claimValue;
-                            const skillsClaim = item.user.claims.find((claim: any) => claim.claimType === "Skills")?.claimValue;
+                            const skills = item.job.skills;
                         
                         return(
                             
@@ -152,12 +139,11 @@ export default function Candidates(){
                                         <img src={`data:image/png;base64, ${userPhotoClaim}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
 
                                         <div className="mt-3">
-                                            <Link to={`/candidate-profile/${item.candidateId}`} className="title h5 text-dark">{item.user.firstName +' '+ item.user.lastName}</Link>
-                                            <p className="text-muted mt-1">{positionClaim}</p>
-                                            <p className="text-muted mt-1">{item.user.email}</p>
+                                            <Link to={`/candidate-profile/${item.candidateId}`} className="title h5 text-dark">{item.job.jobTitle}</Link>
+                                            <p className="text-muted mt-1">{item.job.jobDescription.slice(0,40)}...</p>
 
 
-                                            {skillsClaim && skillsClaim.split(',').map((skill: string, index: number) => (
+                                            {skills && skills.split(',').map((skill: string, index: number) => (
                                                 <span key={index} className="badge bg-soft-primary rounded-pill">{skill.trim()}</span>
                                             ))}
 
@@ -173,7 +159,7 @@ export default function Candidates(){
                                     
                                         
                                         <div className="mt-3">
-                                            <Link to={`/candidate-profile/${item.candidateId}`} className="btn btn-sm btn-primary me-1">View Profile</Link>
+                                            <Link to={`/job-detail/${item.jobId}`} className="btn btn-sm btn-primary me-1">See job</Link>
                                         </div>
 
                                         <div className="mt-2 d-flex align-items-center justify-content-between" style={{ position: 'absolute', top: '8px', right: '12px', color:'black' }}>
@@ -184,9 +170,7 @@ export default function Candidates(){
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item onClick={() => handleStatusChange('RemoveApplication', item.id)}>Remove Application</Dropdown.Item>
-                                                        <Dropdown.Item disabled={item.status=="Application Rejected"} onClick={() => handleStatusChange('Application Rejected', item.id)}>Reject Application</Dropdown.Item>
-                                                        <Dropdown.Item disabled={item.status=="Accepted"} onClick={() => handleStatusChange('Accepted', item.id)}>Accept for Interview</Dropdown.Item>
+                                                        <Dropdown.Item onClick={() => handleStatusChange('WithdrawApplication', item.id)}>Withdraw Application</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>
