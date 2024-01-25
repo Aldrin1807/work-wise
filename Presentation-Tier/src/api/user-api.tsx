@@ -199,3 +199,16 @@ export const fetchApplications = async (token: string, id: string) => {
     console.error(error);
   }
 }
+export const fetchNotifications = async (token: string, id: string) => {
+  try {
+    const response = await axios.get(`${API_URL}Notifications/get-notifications/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}

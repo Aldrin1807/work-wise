@@ -127,7 +127,6 @@ export default function Candidates(){
                     <p>Showing results for <u>{filterStatus}</u></p>
                     {filteredApplications.length === 0 && <p className="text-center">No applications found</p>}
                     {filteredApplications.map((item,index)=>{
-                            const userPhotoClaim = item.user.claims.find((claim: any) => claim.claimType === "Photo")?.claimValue;
                             const skills = item.job.skills;
                         
                         return(
@@ -136,7 +135,7 @@ export default function Candidates(){
                                 <div className="candidate-card position-relative overflow-hidden text-center shadow rounded p-4">
 
                                     <div className="content">
-                                        <img src={`data:image/png;base64, ${userPhotoClaim}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
+                                        <img src={`data:image/png;base64, ${item.job.companyPhoto}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
 
                                         <div className="mt-3">
                                             <Link to={`/candidate-profile/${item.candidateId}`} className="title h5 text-dark">{item.job.jobTitle}</Link>

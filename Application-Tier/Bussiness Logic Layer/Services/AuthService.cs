@@ -9,6 +9,7 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static DataAccessLayer.Constants.Enumerations;
 
 namespace Bussiness_Logic_Layer.Services
 {
@@ -23,10 +24,13 @@ namespace Bussiness_Logic_Layer.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-        public AuthService(UserManager<User> userManager,IConfiguration configuration)
+        private readonly INotificationsService _notifications;
+
+        public AuthService(UserManager<User> userManager,IConfiguration configuration,INotificationsService notifications)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _notifications = notifications;
         }
         public async Task<string> Login(LoginDTO request)
         {
@@ -92,7 +96,14 @@ namespace Bussiness_Logic_Layer.Services
             await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Website, request.Website));
             await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Description, request.Description));
 
-
+            var notification = new Notification
+            {
+                UserId = _user.Id,
+                Message = "Account created succesfully, Enjoy!",
+                Status = Enum.GetName(NotificationStatus.Unread),
+                Type = Enum.GetName(NotificationType.Success)
+            };
+            await _notifications.AddNotification(notification);
         }
 
         public async Task Register(RegisterUserDTO request)
@@ -131,6 +142,14 @@ namespace Bussiness_Logic_Layer.Services
             await _userManager.AddClaimAsync(_user, new Claim(UserClaimTypes.Position, request.Position));
             await _userManager.AddClaimAsync(_user, new Claim(UserClaimTypes.DateOfBirth, request.DateOfBirth));
 
+            var notification = new Notification
+            {
+                UserId = _user.Id,
+                Message = "Account created succesfully, Enjoy!",
+                Status = Enum.GetName(NotificationStatus.Unread),
+                Type = Enum.GetName(NotificationType.Success)
+            };
+            await _notifications.AddNotification(notification);
         }
         public string GenerateToken(User user, IList<string> roles)
         {

@@ -1,4 +1,5 @@
 ﻿using Bussiness_Logic_Layer.DTOs;
+using DataAccessLayer.Constants;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
@@ -29,11 +30,13 @@ namespace Bussiness_Logic_Layer.Services
         private readonly UserManager<User> _userManager;
         private readonly AppDbContext _context;
         private readonly IIdentityService _identity;
-        public JobsService(UserManager<User> userManager, AppDbContext context, IIdentityService identity)
+        private readonly INotificationsService _notifications;
+        public JobsService(UserManager<User> userManager, AppDbContext context, IIdentityService identity,INotificationsService notifications)
         {
             _userManager = userManager;
             _context = context;
             _identity = identity;
+            _notifications = notifications;
         }
 
         
@@ -140,7 +143,8 @@ namespace Bussiness_Logic_Layer.Services
                 .ToList();
 
                 application.Job = job;
-                application.User = user;
+                application.Job.CompanyName = user.UserName;
+                application.Job.CompanyPhoto = user.Claims.FirstOrDefault(c => c.ClaimType == UserClaimTypes.Photo).ClaimValue;   
             }
 
             return applications;
@@ -208,6 +212,9 @@ namespace Bussiness_Logic_Layer.Services
         {
             if (request == null)
                 throw new Exception("Request was empty");
+            var job = await _context.Jobs.FirstOrDefaultAsync(j=>j.Id == request.JobId);
+            if(job == null)
+                throw new Exception("Couldnt find job!");
 
             var application = new JobApplication
             {
@@ -219,6 +226,15 @@ namespace Bussiness_Logic_Layer.Services
 
             await _context.JobApplications.AddAsync(application);
             await _context.SaveChangesAsync();
+
+            var notification = new Notification
+            {
+                UserId = job.CompanyId,
+                Message = "An application was submitted!",
+                Status = Enum.GetName(NotificationStatus.Unread),
+                Type = Enum.GetName(NotificationType.Information)
+            };
+            await _notifications.AddNotification(notification);
         }
 
         #endregion
@@ -234,6 +250,16 @@ namespace Bussiness_Logic_Layer.Services
             application.Status = status;
             _context.Update(application);
             await _context.SaveChangesAsync();
+
+            var notification = new Notification
+            {
+                UserId = application.CandidateId,
+                Message = "The status of your application has changed!",
+                Status = Enum.GetName(NotificationStatus.Unread),
+                Type = Enum.GetName(NotificationType.Information)
+            };
+            await _notifications.AddNotification(notification);
+
         }
         #endregion
 
@@ -257,14 +283,22 @@ namespace Bussiness_Logic_Layer.Services
                 throw new Exception("Id was empty");
 
             var application = await _context.JobApplications.FirstOrDefaultAsync(j => j.Id == id);
-            if (application != null)
+            if (application == null)
             {
-                _context.JobApplications.Remove(application);
-                await _context.SaveChangesAsync();
-            }
-            else
                 throw new Exception("Couldnt find application");
-            
+            }
+            _context.JobApplications.Remove(application);
+            await _context.SaveChangesAsync();
+
+            var notification = new Notification
+            {
+                UserId = application.CandidateId,
+                Message = "Your application was removed!",
+                Status = Enum.GetName(NotificationStatus.Unread),
+                Type = Enum.GetName(NotificationType.Error)
+            };
+            await _notifications.AddNotification(notification);
+
         }
         #endregion
     }

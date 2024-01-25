@@ -4,55 +4,7 @@ namespace DataAccessLayer.Constants
 {
     public class Enumerations
     {
-        public enum Categories
-        {
-            AccountFinance,
-            BankJobs,
-            DataEntryJob,
-            ProjectManager,
-            EducationAndTraining,
-            SoftwareJobs,
-            HealthCareJobs,
-            Marketing,
-            CustomerService,
-            GraphicDesign,
-            Sales,
-            Manufacturing,
-            ResearchAndDevelopment,
-            Legal,
-            Agriculture,
-            Hospitality,
-            Transportation,
-            MediaAndCommunication,
-            RealEstate,
-            EnvironmentalServices,
-            SocialServices,
-            Retail,
-            Telecommunications,
-            ArtsAndEntertainment,
-            Construction,
-            Aviation,
-            Nonprofit,
-            Automotive,
-            Fashion,
-            Energy,
-            Publishing,
-            Insurance,
-            Consulting,
-            Pharmaceuticals,
-            Architecture,
-            Government,
-            Security,
-            Aerospace,
-            Biotechnology,
-            Science,
-            Veterinary,
-            Fitness,
-            Beauty,
-            Sports,
-            Recreation,
-            InsuranceUnderwriting
-        }
+
         public enum NotificationType
         {
             Information,
@@ -61,6 +13,11 @@ namespace DataAccessLayer.Constants
             Error
         }
 
+        public enum NotificationStatus
+        {
+            Read,
+            Unread
+        }
         public enum JobApplicationStatus
         {
             Submitted,
