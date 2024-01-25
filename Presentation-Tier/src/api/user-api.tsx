@@ -212,3 +212,65 @@ export const fetchNotifications = async (token: string, id: string) => {
     console.error(error);
   }
 }
+export const updateNotificationStatus = async (token: string, id: string,status:string) => {
+  try {
+    const response = await axios.put(`${API_URL}Notifications/update-status/${id}`, status, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'  // Set content type to JSON
+      }
+    });
+    if (response.data.status === "Success") {
+      await swal(
+      "Successfully updated!",
+      response.data.message,
+      "success"
+      );
+    }
+
+  } catch (error) {
+    await swal("Update failed", (error as any).response.data.message, "error");
+    console.error(error);
+  }
+}
+export const deleteNotification = async (token: string, id: string) => {
+  try {
+    const response = await axios.delete(`${API_URL}Notifications/delete-notification/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (response.data.status === "Success") {
+      await swal(
+      "Successfully removed!",
+      response.data.message,
+      "success"
+      );
+    }
+
+  } catch (error) {
+    await swal("Update failed", (error as any).response.data.message, "error");
+    console.error(error);
+  }
+}
+export const updateStatuses = async (token: string, id: string,status:string) => {
+  try {
+    const response = await axios.put(`${API_URL}Notifications/update-statuses/${id}`, status, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'  // Set content type to JSON
+      }
+    });
+    if (response.data.status === "Success") {
+      await swal(
+      "Successfully updated!",
+      response.data.message,
+      "success"
+      );
+    }
+
+  } catch (error) {
+    await swal("Update failed", (error as any).response.data.message, "error");
+    console.error(error);
+  }
+}

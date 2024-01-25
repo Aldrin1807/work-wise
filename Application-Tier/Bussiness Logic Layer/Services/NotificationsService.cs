@@ -24,7 +24,10 @@ namespace Bussiness_Logic_Layer.Services
         {
             if (string.IsNullOrEmpty(id))
                 throw new Exception("Id was empty");
-            var notifications = await _context.Notifications.Where(n => n.UserId == id).ToListAsync();
+            var notifications = await _context.Notifications
+                                                            .Where(n => n.UserId == id)
+                                                            .OrderByDescending(n => n.DateTimeCreated)
+                                                            .ToListAsync();
             return notifications;
         }
         public async Task AddNotification(Notification notification)

@@ -101,7 +101,8 @@ namespace Bussiness_Logic_Layer.Services
                 UserId = _user.Id,
                 Message = "Account created succesfully, Enjoy!",
                 Status = Enum.GetName(NotificationStatus.Unread),
-                Type = Enum.GetName(NotificationType.Success)
+                Type = Enum.GetName(NotificationType.Success),
+                DateTimeCreated = DateTime.UtcNow
             };
             await _notifications.AddNotification(notification);
         }
@@ -147,7 +148,8 @@ namespace Bussiness_Logic_Layer.Services
                 UserId = _user.Id,
                 Message = "Account created succesfully, Enjoy!",
                 Status = Enum.GetName(NotificationStatus.Unread),
-                Type = Enum.GetName(NotificationType.Success)
+                Type = Enum.GetName(NotificationType.Success),
+                DateTimeCreated = DateTime.UtcNow
             };
             await _notifications.AddNotification(notification);
         }

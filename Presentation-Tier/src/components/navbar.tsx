@@ -6,11 +6,12 @@ import logoLight from "../assets/images/logo-light.png"
 import { FaEllipsisH, FaEnvelope, FaEnvelopeOpen, FaRegBell } from "react-icons/fa";
 import { FiUser,  FiLogOut } from "react-icons/fi";
 import { useSelector } from "react-redux";
-import { fetchNotifications, fetchUser } from "../api/user-api";
+import { deleteNotification, fetchNotifications, fetchUser, updateNotificationStatus, updateStatuses } from "../api/user-api";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../redux/userSlice";
 import { FaCheck } from "react-icons/fa6";
 import { Button, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
+import swal from "sweetalert";
 
 export default function Navbar({navClass, navLight}: {navClass: string, navLight: boolean}){
     const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
     const [notificationDropdown, setNotificationDropdown] = useState(false);
     const [profileDropdown, setProfileDropdown] = useState(false);
     const [notifications,setNotifications] = useState([] as any);
+    const [changed,setChanged] = useState(false);
 
     let [manu , setManu] = useState('');
     let location = useLocation();
@@ -49,14 +51,23 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
         }
         const fetchData = async () => {
             const getUser = await fetchUser(user.token,user.userId);
-            const response = await fetchNotifications(user.token,user.userId);
-
             setUserData(getUser);
-            setNotifications(response);
         };
         fetchData();
         console.log("user fetched");
     }, [user]);
+
+    useEffect(() => {
+        if(!user.isAuthenticated){
+            return;
+        }
+        const fetchData = async () => {
+            const response = await fetchNotifications(user.token,user.userId);
+            setNotifications(response);
+        };
+        fetchData();
+        console.log("notifications fetched");
+    },[user,changed])
 
 
     const toggleNotificationDropdown = () => {
@@ -68,10 +79,37 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
         setProfileDropdown(!profileDropdown);
         setNotificationDropdown(false);
     };
-    const handleNotificationDropdown = (id: number) => {
-        console.log(id);
+    
+    const updateStatus = async (id: string, status: string) => {
+        await updateNotificationStatus(user.token, id, status);
+        setChanged(!changed);
     }
+    const deleteNotif = async (id: string) => {
+        const confirmTitle = "Are you sure?";
+        const confirmText = "Once deleted, you will not be able to recover this notification!";
+        const confirmIcon = "warning";
+        const confirmButtonText = "Delete";
+        const status = "RemoveApplication";
 
+        const shouldProceed = await swal({
+            title: confirmTitle,
+            text: confirmText,
+            icon: confirmIcon,
+            buttons: ["Cancel", confirmButtonText],
+            dangerMode: status === "RemoveApplication",
+        });
+
+        if (shouldProceed) {
+           await deleteNotification(user.token, id);
+           setChanged(!changed);
+        } else {
+            swal("Action Canceled", "Notification is safe!", "info");
+        }
+    }
+    const updateAllStatuses = async (status: string) => {
+        await updateStatuses(user.token, user.userId, status);
+        setChanged(!changed);
+    }
 
     return(
     <header id="topnav" className='nav-sticky'>
@@ -116,40 +154,32 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                                 style={{ width: '325px', position: 'absolute', right: '0' }}
                             >
                                 <div className="search-bar">
-                                    <div id="itemSearch" className="menu-search mb-0">
+                                    <div id="itemSearch" style={{height:'20rem',overflowY:'auto', border: '1px solid #ccc', borderBottomLeftRadius: '7px', borderBottomRightRadius: '7px', borderTop: 'none' }} className="menu-search mb-0">
                                         <div className="d-flex justify-content-end me-4 align-items-center" >
-                                        {notifications.some((notification: any) => notification.status === 'Unread') ? (
-                                            <OverlayTrigger
-                                                placement="top"
-                                                overlay={<Tooltip id="tooltip-mark-all-read">Mark All as Read</Tooltip>}
-                                            >
-                                                <Button variant="outline-primary" className="icons" style={{ fontSize: '1rem' }} size="sm">
+                                        {notifications.some((notification: any) => notification.status === 'Unread') ? (notifications.length > 0 && 
+                                                <Button variant="outline-primary" className="icons" style={{ fontSize: '1rem' }} size="sm" onClick={()=>updateAllStatuses("Read")}>
                                                     <FaEnvelopeOpen />
                                                 </Button>
-                                            </OverlayTrigger>
-                                        ) : (
-                                            <OverlayTrigger
-                                                placement="top"
-                                                overlay={<Tooltip id="tooltip-mark-all-unread">Mark All as Unread</Tooltip>}
-                                            >
-                                                <Button variant="outline-primary" className="icons" style={{ fontSize: '1rem' }} size="sm">
+                                        ) : (notifications.length > 0 && 
+                                                <Button variant="outline-primary" className="icons" style={{ fontSize: '1rem' }} size="sm" onClick={()=>updateAllStatuses("Unread")}>
                                                     <FaEnvelope />
                                                 </Button>
-                                            </OverlayTrigger>
                                         )}
                                         </div>
+                                        <hr className="mt-1 mb-1"/>
                                         {notifications.length === 0 && <p className="text-center">No notifications.</p>}
-                                        {notifications.slice(0, 3).map((notification:any) => (
+                                        {notifications.map((notification:any) => (
                                             <>
-                                            <hr className="mt-1 mb-1"/>
-                                            <div key={notification.id} className="notification-item d-flex flex-row justify-content-evenly align-items-center ">
+                                            <div key={notification.id} className="notification-item d-flex flex-row justify-content-evenly align-items-center p-1" style={{ backgroundColor: notification.status === 'Unread' ? 'aliceblue' : ''}}>
                                                 <p className={`text-center ${notification.type === 'Information' ? 'text-info' : ''} ${notification.type === 'Success' ? 'text-success' : ''} ${notification.type === 'Warning' ? 'text-warning' : ''} ${notification.type === 'Error' ? 'text-danger' : ''}`}>{notification.message}</p>
                                                 <Dropdown>
                                                     <Dropdown.Toggle variant="link" id={`dropdown-${notification.id}`} className="dots-icon">
                                                         <i className="mdi mdi-dots-vertical fs-4"></i>
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item>Accept for Interview</Dropdown.Item>
+                                                        <Dropdown.Item onClick={()=>deleteNotif(notification.id)}>Delete</Dropdown.Item>
+                                                        <Dropdown.Item onClick={()=>updateStatus(notification.id,"Read")} disabled={notification.status=="Read"}>Mark as read</Dropdown.Item>
+                                                        <Dropdown.Item onClick={()=>updateStatus(notification.id,"Unread")} disabled={notification.status=="Unread"}>Mark as unread</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>
@@ -190,12 +220,7 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                                     Profile
                                 </Link>
                                 {user.role === 'Employer' ? (
-                                    <Link
-                                        to="/employer-dashboard"
-                                        className="dropdown-item fw-medium fs-6"
-                                    >
-                                        Employer Dashboard
-                                    </Link>
+                                    ''
                                 ) : (
                                     <Link
                                         to="/my-applications"

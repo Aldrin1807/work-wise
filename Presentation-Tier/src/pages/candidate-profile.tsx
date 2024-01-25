@@ -29,7 +29,7 @@ export default function CandidateProfile(){
         skills: '',
         experiences: [] as any
     });
-
+    const [changed,setChanged] = useState(false);
     const user = useSelector((state:any) => state.user);
 
     useEffect(()=>{
@@ -41,7 +41,9 @@ export default function CandidateProfile(){
             setUserData(getUser);
         };
         fetchData();
-    },[])
+
+
+    },[changed])
 
 
     const[prfModal,setPrfModal] = useState(false);
@@ -50,7 +52,7 @@ export default function CandidateProfile(){
     };
     return(
         <>
-        <UserProfileModal showModal={prfModal} setShowModal={setPrfModal} />
+        <UserProfileModal showModal={prfModal} setShowModal={setPrfModal} changed={changed} setChanged={setChanged}/>
         <Navbar navClass={""} navLight={false}/>
         <section className="section">
             <div className="container">
@@ -81,7 +83,7 @@ export default function CandidateProfile(){
 
             <div className="container mt-4">
                 <div className="row g-4">
-                    {user.introduction == ''?(
+                    {userData.introduction === ''?(
                         <div className="col-lg-8 col-md-7 col-12">
                             {user.userId == id?(
                                 <p className="text-center">Add additional data by clicking the edit icon above</p>
@@ -93,7 +95,7 @@ export default function CandidateProfile(){
                     <div className="col-lg-8 col-md-7 col-12">
                         <h5 className="mb-4">Introduction:</h5>
 
-                        <p className="text-muted">{userData.introduction}.</p>
+                        <p className="text-muted">{userData.introduction}</p>
 
                         <h5 className="mt-4">Skills:</h5>
 
@@ -163,16 +165,6 @@ export default function CandidateProfile(){
                 </div>
             </div>
 
-            <div className="container mt-100 mt-60">
-                <div className="row justify-content-center mb-4 pb-2">
-                    <div className="col-12">
-                        <div className="section-title text-center">
-                            <h4 className="title mb-3">Related Candidates</h4>
-                            <p className="text-muted para-desc mx-auto mb-0">Search all the open positions on the web. Get your own personalized salary estimate. Read reviews on over 30000+ companies worldwide.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
         <Footer top={true}/>
         <ScrollTop/>

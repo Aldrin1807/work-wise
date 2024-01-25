@@ -31,11 +31,26 @@ namespace API_Layer.Controllers
             }
         }
         [HttpPut("update-status/{id}")]
-        public async Task<IActionResult> UpdateStatus(string id,string status)
+        public async Task<IActionResult> UpdateStatus(string id,[FromBody]string status)
         {
             try
             {
                 await _service.UpdateStatus(id,status);
+                return Ok(new Response
+                { Status = "Success", Message = "Notification updated succesfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
+        [HttpPut("update-statuses/{id}")]
+        public async Task<IActionResult> UpdateStatuses(string id,[FromBody]string status)
+        {
+            try
+            {
+                await _service.UpdateStatuses(id,status);
                 return Ok(new Response
                 { Status = "Success", Message = "Notifications updated succesfully" });
             }
@@ -45,14 +60,15 @@ namespace API_Layer.Controllers
                 { Status = "Error", Message = ex.Message });
             }
         }
-        [HttpPut("update-statuses/{id}")]
-        public async Task<IActionResult> UpdateStatuses(string id,string status)
+
+        [HttpDelete("delete-notification/{id}")]
+        public async Task<IActionResult> DeleteNotification(string id)
         {
             try
             {
-                await _service.UpdateStatuses(id,status);
+                await _service.DeleteNotification(id);
                 return Ok(new Response
-                { Status = "Success", Message = "Notifications updated succesfully" });
+                { Status = "Success", Message = "Notification deleted succesfully" });
             }
             catch (Exception ex)
             {

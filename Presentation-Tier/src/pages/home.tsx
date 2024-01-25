@@ -178,39 +178,6 @@ export default function Home(){
             {user.role != "Employer" && (
             <>
                 <div className="container mt-100 mt-60">
-                    <div className="row justify-content-center mb-4 pb-2">
-                        <div className="col-12">
-                            <div className="section-title text-center">
-                                <h4 className="title mb-3">Browse by Categories</h4>
-                                <p className="text-muted para-desc mx-auto mb-0">Search all the open positions on the web. Get your own personalized salary estimate. Read reviews on over 30000+ companies worldwide.</p>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <div className="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 mt-0">
-                        {/* {categoriesTwoData.map((item,index)=>{
-                            return(
-                                <div className="col" key={index}>
-                                    <div className="job-category job-category-two rounded shadow bg-light p-3">
-                                        <h5 className="mb-1">{item.title}</h5>
-                                        <p className="text-muted para mb-2">{item.job}</p>
-                                        <Link to="" className="text-primary fw-medium link">Explore Jobs <i className="mdi mdi-arrow-right"></i></Link>
-                                    </div>
-                                </div>
-                            )
-                        })} */}
-                    </div>
-
-                    <div className="row mt-4">
-                        <div className="col-12">
-                            <div className="text-center">
-                                <Link to="/job-categories" className="btn btn-link primary text-muted">See More Categories <i className="mdi mdi-arrow-right"></i></Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div className="container mt-100 mt-60">
                     <Companies/>
                 </div>
             </>

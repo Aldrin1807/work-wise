@@ -6,7 +6,7 @@ import { FaPlus, FaTimes } from 'react-icons/fa';
 import { ActionMeta } from 'react-select';
 import OptionTypeBase from 'react-select';
 import { BsX } from 'react-icons/bs';
-import { UseSelector, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { fetchUser, saveAdditionalData } from '../../api/user-api';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,6 +14,8 @@ import { v4 as uuidv4 } from 'uuid';
 interface UserProfileModalProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  changed: boolean;
+  setChanged: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface Experience {
@@ -196,13 +198,14 @@ const UserProfileModal: React.FC<UserProfileModalProps> = (props) => {
     const response = await saveAdditionalData(user.token, userData);
     if (response) {
         props.setShowModal(false);
+        props.setChanged(!props.changed);
     }
 
     console.log(userData);
   };
 
 
-const OnSelectedChange = (selectedOptions: any, actionMeta: ActionMeta<OptionTypeBase>) => {
+const OnSelectedChange = (selectedOptions: any) => {
     setSelectedSkills(selectedOptions as any);
   
     const skillsString = (selectedOptions as any[]).map((skill: any) => skill.value).join(', ');

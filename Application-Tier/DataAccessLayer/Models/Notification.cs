@@ -10,6 +10,7 @@ namespace DataAccessLayer.Models
         public string Status { get; set; }
         public string UserId { get; set; } 
         public User User { get; set; }
+        public DateTime DateTimeCreated { get; set; }
 
     }
 }

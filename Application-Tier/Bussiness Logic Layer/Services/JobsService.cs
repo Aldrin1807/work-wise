@@ -232,7 +232,8 @@ namespace Bussiness_Logic_Layer.Services
                 UserId = job.CompanyId,
                 Message = "An application was submitted!",
                 Status = Enum.GetName(NotificationStatus.Unread),
-                Type = Enum.GetName(NotificationType.Information)
+                Type = Enum.GetName(NotificationType.Information),
+                DateTimeCreated = DateTime.UtcNow
             };
             await _notifications.AddNotification(notification);
         }
@@ -256,7 +257,8 @@ namespace Bussiness_Logic_Layer.Services
                 UserId = application.CandidateId,
                 Message = "The status of your application has changed!",
                 Status = Enum.GetName(NotificationStatus.Unread),
-                Type = Enum.GetName(NotificationType.Information)
+                Type = Enum.GetName(NotificationType.Information),
+                DateTimeCreated = DateTime.UtcNow
             };
             await _notifications.AddNotification(notification);
 
@@ -295,7 +297,8 @@ namespace Bussiness_Logic_Layer.Services
                 UserId = application.CandidateId,
                 Message = "Your application was removed!",
                 Status = Enum.GetName(NotificationStatus.Unread),
-                Type = Enum.GetName(NotificationType.Error)
+                Type = Enum.GetName(NotificationType.Error),
+                DateTimeCreated = DateTime.UtcNow
             };
             await _notifications.AddNotification(notification);
 

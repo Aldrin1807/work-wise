@@ -7,11 +7,8 @@ import "./assets/css/materialdesignicons.min.css"
 
 
 import Home from "./pages/home";
-import JobCategories from "./pages/job-categories";
 import JobList from "./pages/job-list";
-import JobApply from "./pages/job-apply";
 import JobPost from "./pages/job-post";
-import Career from "./pages/career";
 import JobDetail from "./pages/job-detail";
 import Employers from "./pages/employers";
 import EmployerProfile from "./pages/employer-profile";
@@ -34,11 +31,8 @@ function App() {
   const commonRoutes = [
     { path: '/', element: <Home /> },
     { path: '/home', element: <Home /> },
-    { path: '/job-categories', element: <JobCategories /> },
     { path: '/job-list', element: <JobList /> },
     { path: '/job-list/:query', element: <JobList /> },
-    { path: '/job-apply', element: <JobApply /> },
-    { path: '/career', element: <Career /> },
     { path: '/job-detail/:id', element: <JobDetail /> },
     { path: '/employers', element: <Employers /> },
     { path: '/error', element: <Error /> },

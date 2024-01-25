@@ -32,3 +32,13 @@ a {
 p {
     line-height: 1.8;
 }
+.menu-search::-webkit-scrollbar {
+    width: 5px; 
+}
+.menu-search::-webkit-scrollbar-thumb {
+    background-color: #b3aeae;
+    border-radius: 5px; 
+}
+.menu-search::-webkit-scrollbar-thumb:hover {
+    background-color: #555; 
+}
