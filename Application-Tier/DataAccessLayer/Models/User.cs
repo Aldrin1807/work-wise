@@ -13,10 +13,6 @@ namespace DataAccessLayer.Models
 
         // Navigation properties
         public List<Notification> Notifications { get; set; }
-        [JsonIgnore]
-        public List<JobApplication> JobApplications { get; set; }
-        public List<Job> JobsPosted { get; set; }// This is if the user is a company
-
 
         public ICollection<IdentityUserClaim<string>> Claims { get; set; }
         public ICollection<IdentityUserRole<string>> Roles { get; set; }

@@ -1,18 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 
 import bg1 from "../assets/images/hero/bg4.jpg"
-import logo1 from "../assets/images/company/lenovo-logo.png"
-import image1 from "../assets/images/company/1.jpg"
-import image2 from "../assets/images/company/2.jpg"
-import image3 from "../assets/images/company/3.jpg"
 
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import ScrollTop from "../components/scrollTop";
 
-import { jobData } from "../data/data";
 
-import {FiMapPin, FiClock, FiDollarSign, FiDribbble, FiLinkedin, FiFacebook, FiInstagram, FiTwitter,} from "../assets/icons/vander"
+import {FiMapPin, FiClock, FiDollarSign} from "../assets/icons/vander"
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchEmployer } from "../api/employer-api";
@@ -21,30 +16,11 @@ export default function EmployerProfile(){
     let params = useParams()
     let id = params.id
 
-    const [employerData,setEmployerData] = useState({
-        firstName: '',
-        lastName: '',
-        companyName:'',
-        email: '',
-        password: '',
-        phoneNumber: '',
-        gender: '',
-        photo: null,
-        location: '',
-        founded: "",
-        founder: "",
-        noEmployees: "",
-        website: "",
-        description: "",
-        jobs: [] as any
-    });
+    const [employerData,setEmployerData] = useState<any>({});
 
     const user = useSelector((state:any) => state.user);
 
     useEffect(()=>{
-        if(user.token==null){
-            return;
-        }
         const fetchData = async () => {
             const getEmployer = await fetchEmployer(user.token, id || '');
             setEmployerData(getEmployer);
@@ -76,12 +52,12 @@ export default function EmployerProfile(){
                                     <img src={`data:image/png;base64, ${employerData.photo}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
 
                                     <div className="ms-3">
-                                        <h5>{employerData.companyName}</h5>
-                                        <span className="text-muted d-flex align-items-center"><FiMapPin className="fea icon-sm me-1"/>{employerData.location}</span>
+                                        <h5>{employerData.user?.userName}</h5>
+                                        <span className="text-muted d-flex align-items-center"><FiMapPin className="fea icon-sm me-1"/>{employerData.user?.location}</span>
                                     </div>
                                 </div>
 
-                                {user.email == employerData.email ? (
+                                {user.email == employerData.user?.email ? (
                                 <div className="mt-4 mt-md-0">
                                     <Link to="/job-post" className="btn btn-sm btn-soft-primary">Post job</Link>
                                 </div>
@@ -102,10 +78,10 @@ export default function EmployerProfile(){
                         <h4 className="my-4">Vacancies:</h4>
 
                         <div className="row g-4">
-                            {employerData.jobs.length == 0 ?(
+                            {employerData.jobsPosted?.length == 0 ?(
                                 <p className="text-center">No jobs posted yet</p>
                             ):(
-                            employerData.jobs.map((item:any)=>{
+                            employerData.jobsPosted?.map((item:any)=>{
                                 return(
                                     <div className="col-lg-6 col-12" key={item.id}>
                                         <div className="job-post rounded shadow bg-white">
@@ -142,7 +118,7 @@ export default function EmployerProfile(){
 
                                 <div className="d-flex align-items-center justify-content-between mt-2">
                                     <span className="text-muted fw-medium">Headquarters:</span>
-                                    <span>{employerData.location}</span>
+                                    <span>{employerData.user?.location}</span>
                                 </div>
 
                                 <div className="d-flex align-items-center justify-content-between mt-2">

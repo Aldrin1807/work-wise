@@ -44,11 +44,11 @@ function App() {
     { path: '/privacy', element: <Privacy /> },
     { path: '/contactus', element: <ContactUs /> },
     { path: '*', element: <Navigate to="/error" /> },
+    { path: '/employer-profile/:id', element: <EmployerProfile /> }
   ];
 
   const userRoutes = [
     ...commonRoutes,    
-    { path: '/employer-profile/:id', element: <EmployerProfile /> },
     { path: '/candidate-profile/:id', element: <CandidateProfile /> },
     { path: '/my-applications', element: <MyApplications /> }
   ];
@@ -56,7 +56,6 @@ function App() {
   const employerRoutes = [
     ...commonRoutes,
     { path: '/candidates/:id', element: <Candidates /> },
-    { path: '/employer-profile/:id', element: <EmployerProfile /> },
     { path: '/candidate-profile/:id', element: <CandidateProfile /> },
     { path: '/job-post', element: <JobPost /> },
     { path: '/my-jobs', element: <MyJobs /> },
@@ -65,7 +64,7 @@ function App() {
   const getRoutesBasedOnRole = () => {
     if (user.token === null) {
       return commonRoutes;
-    } else if (user.role === "User") {
+    } else if (user.role === "Candidate") {
       return userRoutes;
     } else if (user.role === "Employer") {
       return employerRoutes;

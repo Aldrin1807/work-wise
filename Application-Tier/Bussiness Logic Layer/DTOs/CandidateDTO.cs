@@ -2,7 +2,7 @@
 
 namespace Bussiness_Logic_Layer.DTOs
 {
-    public class UsersDTO
+    public class CandidateDTO
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

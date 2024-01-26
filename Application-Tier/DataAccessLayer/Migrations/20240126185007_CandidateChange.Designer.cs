@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240120172207_userExperience")]
-    partial class userExperience
+    [Migration("20240126185007_CandidateChange")]
+    partial class CandidateChange
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,13 +25,84 @@ namespace DataAccessLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DataAccessLayer.Models.Candidate", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DateOfBirth")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Introduction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Photo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Skills")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Candidates");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.Employer", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Founded")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Founder")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NoEmployees")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Photo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Website")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Employers");
+                });
+
             modelBuilder.Entity("DataAccessLayer.Models.Job", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CategoryNo")
-                        .HasColumnType("int");
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CompanyId")
                         .IsRequired()
@@ -42,10 +113,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Experience")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Industry")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -65,12 +132,20 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Salary")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Skills")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Spots")
                         .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -81,13 +156,16 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.JobApplication", b =>
                 {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("CandidateId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("JobId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DateSubmited")
+                    b.Property<string>("DateSubmitted")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -95,7 +173,9 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CandidateId", "JobId");
+                    b.HasKey("Id", "CandidateId", "JobId");
+
+                    b.HasIndex("CandidateId");
 
                     b.HasIndex("JobId");
 
@@ -107,7 +187,14 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("DateTimeCreated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -372,9 +459,31 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("DataAccessLayer.Models.Candidate", b =>
+                {
+                    b.HasOne("DataAccessLayer.Models.User", "User")
+                        .WithOne()
+                        .HasForeignKey("DataAccessLayer.Models.Candidate", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.Employer", b =>
+                {
+                    b.HasOne("DataAccessLayer.Models.User", "User")
+                        .WithOne()
+                        .HasForeignKey("DataAccessLayer.Models.Employer", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DataAccessLayer.Models.Job", b =>
                 {
-                    b.HasOne("DataAccessLayer.Models.User", "Company")
+                    b.HasOne("DataAccessLayer.Models.Employer", "Company")
                         .WithMany("JobsPosted")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -385,7 +494,7 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.JobApplication", b =>
                 {
-                    b.HasOne("DataAccessLayer.Models.User", "User")
+                    b.HasOne("DataAccessLayer.Models.Candidate", "Candidate")
                         .WithMany("JobApplications")
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -397,9 +506,9 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Job");
+                    b.Navigation("Candidate");
 
-                    b.Navigation("User");
+                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.Notification", b =>
@@ -415,13 +524,13 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.UserExperience", b =>
                 {
-                    b.HasOne("DataAccessLayer.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("DataAccessLayer.Models.Candidate", "Candidate")
+                        .WithMany("Experiences")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Candidate");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -475,6 +584,18 @@ namespace DataAccessLayer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DataAccessLayer.Models.Candidate", b =>
+                {
+                    b.Navigation("Experiences");
+
+                    b.Navigation("JobApplications");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.Employer", b =>
+                {
+                    b.Navigation("JobsPosted");
+                });
+
             modelBuilder.Entity("DataAccessLayer.Models.Job", b =>
                 {
                     b.Navigation("Applications");
@@ -483,10 +604,6 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("DataAccessLayer.Models.User", b =>
                 {
                     b.Navigation("Claims");
-
-                    b.Navigation("JobApplications");
-
-                    b.Navigation("JobsPosted");
 
                     b.Navigation("Notifications");
 

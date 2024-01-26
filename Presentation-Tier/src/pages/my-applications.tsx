@@ -138,8 +138,8 @@ export default function Candidates(){
                                         <img src={`data:image/png;base64, ${item.job.companyPhoto}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
 
                                         <div className="mt-3">
-                                            <Link to={`/candidate-profile/${item.candidateId}`} className="title h5 text-dark">{item.job.jobTitle}</Link>
-                                            <p className="text-muted mt-1">{item.job.jobDescription.slice(0,40)}...</p>
+                                            <Link to={`/job-detail/${item.jobId}`} className="title h5 text-dark">{item.job.jobTitle}</Link>
+                                            <p className="text-muted mt-1">{item.job.jobDescription.slice(0,20)}...</p>
 
 
                                             {skills && skills.split(',').map((skill: string, index: number) => (

@@ -4,13 +4,14 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace Bussiness_Logic_Layer.Services
 {
     public interface IUsersService
     {
-        Task<UsersDTO> GetUser(string id);
+        Task<Candidate> GetCandidate(string id);
         Task SaveAdditionalData(AdditionalDataDTO request);
     }
     public class UsersService : IUsersService
@@ -24,7 +25,7 @@ namespace Bussiness_Logic_Layer.Services
             _context = context;
             _identity = identity;
         }
-        public async Task<UsersDTO> GetUser(string id)
+        public async Task<Candidate> GetCandidate(string id)
         {
             if (id == null)
             {
@@ -32,51 +33,26 @@ namespace Bussiness_Logic_Layer.Services
             }
 
             var user = await _identity.GetUserById(id);
-            var userClaims = await _userManager.GetClaimsAsync(user);
-
-            var _user = new UsersDTO
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Gender = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Gender),
-                Photo = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Photo),
-                Location = user.Location,
-                Position = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Position),
-                DateOfBirth = _identity.GetUserClaimValue(userClaims, UserClaimTypes.DateOfBirth),
-                Introduction = _identity.GetUserClaimValue(userClaims,UserClaimTypes.Introduction),
-                Skills = _identity.GetUserClaimValue(userClaims,UserClaimTypes.Skills)
-            };
+            var candidate = await _context.Candidates.FirstOrDefaultAsync(c=>c.UserId == user.Id);
             var _experiences = await _context.UserExperiences.Where(u => u.UserId == id).ToListAsync();
-            _user.Experiences = _experiences;
 
-            return _user;
+            if (!_experiences.IsNullOrEmpty())
+                candidate.Experiences = _experiences;
+
+            candidate.User = user;
+
+            return candidate;
         }
 
         public async Task SaveAdditionalData(AdditionalDataDTO request)
         {
-            var user = await _identity.GetUserById(request.UserId);
-            var userClaims = await _userManager.GetClaimsAsync(user);
+            var candidate = await _context.Candidates.FirstOrDefaultAsync(e => e.UserId == request.UserId);
 
-            var introClaim = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Introduction);
-            var skillsClaim = _identity.GetUserClaimValue(userClaims, UserClaimTypes.Skills);
+            candidate.Skills = request.Skills;
+            candidate.Introduction = request.Introduction;
 
-            
-            if(!string.IsNullOrEmpty(introClaim))
-            {
-               await _userManager.ReplaceClaimAsync(user, userClaims.FirstOrDefault(c => c.Type == UserClaimTypes.Introduction), new Claim(UserClaimTypes.Introduction, request.Introduction));
-            }
-            await _userManager.AddClaimAsync(user, new Claim(UserClaimTypes.Introduction, request.Introduction));
+            _context.Candidates.Update(candidate);
 
-            if (request.Skills != null)
-            {
-                if (!string.IsNullOrEmpty(skillsClaim))
-                {
-                    await _userManager.ReplaceClaimAsync(user, userClaims.FirstOrDefault(c => c.Type == UserClaimTypes.Skills), new Claim(UserClaimTypes.Skills, request.Skills));
-                }
-                await _userManager.AddClaimAsync(user, new Claim(UserClaimTypes.Skills, request.Skills));
-            }
             if (request.Experiences != null)
             {
                 foreach (var experience in request.Experiences)

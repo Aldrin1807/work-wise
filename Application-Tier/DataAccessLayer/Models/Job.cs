@@ -19,7 +19,7 @@ namespace DataAccessLayer.Models
         public string Category { get; set; }
         public string CompanyId { get; set; }
         [JsonIgnore]
-        public User Company { get; set; }
+        public Employer Company { get; set; }
         [JsonIgnore]
         public List<JobApplication> Applications { get; set; }
 

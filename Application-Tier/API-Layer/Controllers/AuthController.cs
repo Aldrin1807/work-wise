@@ -16,7 +16,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpPost("register-user")]
-        public async Task<IActionResult> RegisterUser([FromForm] RegisterUserDTO request)
+        public async Task<IActionResult> RegisterUser([FromForm] RegisterCandidateDTO request)
         {
             try
             {

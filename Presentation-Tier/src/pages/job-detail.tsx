@@ -19,23 +19,7 @@ export default function JobDetail() {
     let id = params.id
 
     const [jobData, setJobData] = useState([] as any);
-    const [companyData, setCompanyData] = useState({
-        firstName: '',
-        lastName: '',
-        companyName: '',
-        email: '',
-        password: '',
-        phoneNumber: '',
-        gender: '',
-        photo: null,
-        location: '',
-        founded: "",
-        founder: "",
-        noEmployees: "",
-        website: "",
-        description: "",
-        jobs: [] as any
-    });
+    const [companyData, setCompanyData] = useState<any>({});
     const[apply,setApply] = useState(false);
 
     useEffect(() => {
@@ -97,8 +81,8 @@ export default function JobDetail() {
                                 <h4>{jobData.jobTitle}</h4>
 
                                 <ul className="list-unstyled mb-0">
-                                    <li className="d-inline-flex align-items-center text-muted me-2"><FiLayout className="fea icon-sm text-primary me-1"/> {companyData && companyData.companyName} </li>
-                                    <li className="d-inline-flex align-items-center text-muted"><FiMapPin className="fea icon-sm text-primary me-1" />{companyData && companyData.location}</li>
+                                    <li className="d-inline-flex align-items-center text-muted me-2"><FiLayout className="fea icon-sm text-primary me-1"/> {companyData && companyData.user?.userName} </li>
+                                    <li className="d-inline-flex align-items-center text-muted"><FiMapPin className="fea icon-sm text-primary me-1" />{companyData && companyData.user?.location}</li>
                                 </ul>
                             </div>
                         </div>
@@ -132,7 +116,7 @@ export default function JobDetail() {
                                     <div className="flex-1">
                                         <h6 className="widget-title mb-0">Company Name:</h6>
                                         <Link to={`/employer-profile/${jobData.companyId}`}>
-                                        <small className="text-primary mb-0">{companyData && companyData.companyName}</small>
+                                        <small className="text-primary mb-0">{companyData && companyData.user?.userName}</small>
                                         </Link>
                                     </div>
                                 </div>
@@ -198,7 +182,7 @@ export default function JobDetail() {
                 </div>
             </div>
 
-            {companyData.jobs.some((item: any) => item.id !== jobData.id) && (
+            {companyData.jobsPosted?.some((item: any) => item.id !== jobData.id) && (
                 <div className="container mt-100 mt-60">
                     <div className="row justify-content-center mb-4 pb-2">
                         <div className="col-12">
@@ -210,7 +194,7 @@ export default function JobDetail() {
                     </div>
 
                     <div className="row">
-                        {companyData.jobs.map((item: any, index: any) => {
+                        {companyData.jobsPosted?.map((item: any, index: any) => {
                             return (
                                 item.id !== jobData.id && (
                                     <div className="col-lg-4 col-md-6 col-12" key={index}>

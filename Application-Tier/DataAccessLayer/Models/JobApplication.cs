@@ -11,7 +11,7 @@ namespace DataAccessLayer.Models
         public string JobId { get; set; }
         public Job Job { get; set; }
         public string CandidateId { get; set; }
-        public User User { get; set; }
+        public Candidate Candidate{ get; set; }
 
 
         //

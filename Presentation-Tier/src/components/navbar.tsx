@@ -12,6 +12,7 @@ import { clearUser } from "../redux/userSlice";
 import { FaCheck } from "react-icons/fa6";
 import { Button, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import swal from "sweetalert";
+import { fetchEmployer } from "../api/employer-api";
 
 export default function Navbar({navClass, navLight}: {navClass: string, navLight: boolean}){
     const dispatch = useDispatch();
@@ -34,24 +35,19 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
 
 
     const user = useSelector((state:any) => state.user);
-    const [userData,setUserData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        phoneNumber: '',
-        gender: '',
-        photo: null,
-        location: '',
-        position: ''
-    });
+    const [userData,setUserData] = useState<any>({});
     useEffect(() => {
         if(!user.isAuthenticated){
             return;
         }
         const fetchData = async () => {
-            const getUser = await fetchUser(user.token,user.userId);
-            setUserData(getUser);
+            if(user.role === "Candidate"){
+                const getUser = await fetchUser(user.token,user.userId);
+                setUserData(getUser);
+            }else if(user.role === "Employer"){
+                const getUser = await fetchEmployer(user.token,user.userId);
+                setUserData(getUser);
+            }
         };
         fetchData();
         console.log("user fetched");
@@ -110,6 +106,28 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
         await updateStatuses(user.token, user.userId, status);
         setChanged(!changed);
     }
+    
+    let [isOpen, setMenu] = useState(false);
+
+    const toggleMenu = () => {
+        setMenu(!isOpen);
+        if (document.getElementById("navigation")) {
+            const anchorArray = Array.from(
+                document.getElementById("navigation")?.getElementsByTagName("a") || []
+            ) as HTMLAnchorElement[];
+            anchorArray.forEach((element) => {
+                element.addEventListener("click", (elem) => {
+                    const target = (elem.target as HTMLElement).getAttribute("href");
+                    if (target !== "") {
+                        if ((elem.target as HTMLElement)?.nextElementSibling) {
+                            const submenu = (elem.target as HTMLElement).nextElementSibling?.nextElementSibling;
+                            submenu?.classList.toggle("open");
+                        }
+                    }
+                });
+            });
+        }
+    };
 
     return(
     <header id="topnav" className='nav-sticky'>
@@ -130,6 +148,17 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                     <img src={logoWhite} className="logo-dark-mode" alt=""/>
                 </Link>
             }
+             <div className="menu-extras">
+                <div className="menu-item">
+                    <Link to='#' className={`navbar-toggle ${isOpen ? 'open' : ''}`} id="isToggle" onClick={toggleMenu}>
+                        <div className="lines">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </Link>
+                </div>
+            </div>
         <ul className="buy-button list-inline mb-0">
             {!user.isAuthenticated ? (
                 <li className="list-inline-item ps-1 mb-0">
@@ -198,7 +227,7 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                                 onClick={toggleProfileDropdown}
                             >
                                 <img
-                                    src={`data:image/png;base64, ${userData.photo}`}
+                                    src={`data:image/png;base64, ${ userData?.photo}`}
                                     className="img-fluid rounded-pill"
                                     alt=""
                                 />
@@ -246,7 +275,7 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
             )}
         </ul>
     
-            <div id="navigation">  
+            <div id="navigation" className={`${isOpen ? 'open' : ''}`}>  
                 <ul className="navigation-menu nav-right nav-light">
                     {user.role==="Employer"?(
                         <>

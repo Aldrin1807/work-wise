@@ -22,7 +22,6 @@ export const Registration = async (form:FormData) => {
       return false;
     }
 };
-
 export const fetchEmployer = async (token: string,id :string) => {
   try {
     const response = await axios.get(`${API_URL}Employer/get-employer/${id}`, {
@@ -36,7 +35,6 @@ export const fetchEmployer = async (token: string,id :string) => {
       console.error(error);
     }
 };
-
 export const postJob = async (form: any, token: string) => {
   try {
       const response = await axios.post(`${API_URL}Jobs/post-job`, form,{
@@ -75,7 +73,6 @@ export const fetchMyJobs = async (token: string, id: string) => {
     console.log('API call failed');
   }
 };
-
 export const deleteJob = async (token: string,id :string) => {
   try {
     const response = await axios.delete(`${API_URL}Jobs/delete-job/${id}`, {
@@ -95,7 +92,6 @@ export const deleteJob = async (token: string,id :string) => {
       await swal("Delete failed", (error as any).response.data.message, "error");
     }
 }
-
 export const fetchEmployers = async () => {
   try {
     const response = await axios.get(`${API_URL}Employer/get-employers`);

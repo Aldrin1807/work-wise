@@ -137,11 +137,8 @@ export default function Candidates(){
                 </div>
                 <div className="row g-4" style={{minHeight:'30rem'}}>
                     <p>Showing results for <u>{filterStatus}</u></p>
-                    {filteredCandidates.length === 0 && <p className="text-center">No candidates found</p>}
-                    {filteredCandidates.map((item,index)=>{
-                            const userPhotoClaim = item.user.claims.find((claim: any) => claim.claimType === "Photo")?.claimValue;
-                            const positionClaim = item.user.claims.find((claim: any) => claim.claimType === "Position")?.claimValue;
-                            const skillsClaim = item.user.claims.find((claim: any) => claim.claimType === "Skills")?.claimValue;
+                    {filteredCandidates?.length === 0 && <p className="text-center">No candidates found</p>}
+                    {filteredCandidates && filteredCandidates.map((item,index)=>{
                         
                         return(
                             
@@ -149,15 +146,15 @@ export default function Candidates(){
                                 <div className="candidate-card position-relative overflow-hidden text-center shadow rounded p-4">
 
                                     <div className="content">
-                                        <img src={`data:image/png;base64, ${userPhotoClaim}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
+                                        <img src={`data:image/png;base64, ${item.candidate?.photo}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
 
                                         <div className="mt-3">
-                                            <Link to={`/candidate-profile/${item.candidateId}`} className="title h5 text-dark">{item.user.firstName +' '+ item.user.lastName}</Link>
-                                            <p className="text-muted mt-1">{positionClaim}</p>
-                                            <p className="text-muted mt-1">{item.user.email}</p>
+                                            <Link to={`/candidate-profile/${item.candidateId}`} className="title h5 text-dark">{item.candidate?.user?.firstName +' '+ item.candidate.user?.lastName}</Link>
+                                            <p className="text-muted mt-1">{item.candidate?.position}</p>
+                                            <p className="text-muted mt-1">{item.candidate?.user?.email}</p>
 
 
-                                            {skillsClaim && skillsClaim.split(',').map((skill: string, index: number) => (
+                                            {item.candidate?.skills && item.candidate?.skills.split(',').map((skill: string, index: number) => (
                                                 <span key={index} className="badge bg-soft-primary rounded-pill">{skill.trim()}</span>
                                             ))}
 

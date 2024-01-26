@@ -66,9 +66,11 @@ namespace Bussiness_Logic_Layer.Services
             foreach (var job in jobs)
             {
                 var user = await _identity.GetUserById(job.CompanyId);
+                var employer = await _context.Employers.FirstOrDefaultAsync(e => e.UserId == user.Id);
+
                 job.CompanyName = user.UserName;
                 job.CompanyLocation = user.Location;
-                job.CompanyPhoto = await _identity.GetUserPhoto(user);
+                job.CompanyPhoto = employer.Photo;
                 job.ApplicationsNo = await _context.JobApplications.Where(j => j.JobId == job.Id).CountAsync();
             }
 
@@ -82,9 +84,11 @@ namespace Bussiness_Logic_Layer.Services
             foreach(var job in jobs)
             {
                 var user = await _identity.GetUserById(job.CompanyId);
+                var employer = await _context.Employers.FirstOrDefaultAsync(e=>e.UserId == user.Id);
+
                 job.CompanyName = user.UserName;
                 job.CompanyLocation = user.Location;
-                job.CompanyPhoto = await _identity.GetUserPhoto(user);
+                job.CompanyPhoto = employer.Photo;
             }
 
             return jobs;
@@ -97,9 +101,11 @@ namespace Bussiness_Logic_Layer.Services
             foreach (var job in jobs)
             {
                 var user = await _identity.GetUserById(job.CompanyId);
+                var employer = await _context.Employers.FirstOrDefaultAsync(e => e.UserId == user.Id);
+
                 job.CompanyName = user.UserName;
                 job.CompanyLocation = user.Location;
-                job.CompanyPhoto = await _identity.GetUserPhoto(user);
+                job.CompanyPhoto = employer.Photo;
             }
 
             if (!string.IsNullOrEmpty(keyword))
@@ -127,24 +133,18 @@ namespace Bussiness_Logic_Layer.Services
         {
             if (string.IsNullOrEmpty(id))
                 throw new Exception("Id was empty");
+
             var applications = await _context.JobApplications.Where(j => j.CandidateId == id).ToListAsync();
             foreach (var application in applications)
             {
                 var job = await _context.Jobs.FirstOrDefaultAsync(j=>j.Id == application.JobId);
                 var user = await _identity.GetUserById(job.CompanyId);
-                var userClaims = await _userManager.GetClaimsAsync(user);
+                var employer = await _context.Employers.FirstOrDefaultAsync(e => e.UserId == user.Id);
 
-                user.Claims = userClaims
-                .Select(claim => new IdentityUserClaim<string>
-                {
-                    ClaimType = claim.Type,
-                    ClaimValue = claim.Value
-                })
-                .ToList();
 
                 application.Job = job;
                 application.Job.CompanyName = user.UserName;
-                application.Job.CompanyPhoto = user.Claims.FirstOrDefault(c => c.ClaimType == UserClaimTypes.Photo).ClaimValue;   
+                application.Job.CompanyPhoto = employer.Photo;   
             }
 
             return applications;
@@ -154,28 +154,24 @@ namespace Bussiness_Logic_Layer.Services
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(jobId))
                 throw new Exception("Data provided was empty");
+
             var application = await _context.JobApplications.FirstOrDefaultAsync(j => j.CandidateId == userId && j.JobId == jobId);
+
             return application != null;
         }
         public async Task<List<JobApplication>> GetJobApplications(string id)
         {
             if (string.IsNullOrEmpty(id))
                 throw new Exception("Id was empty");
+
             var applications = await _context.JobApplications.Where(j => j.JobId == id).ToListAsync();
+
             foreach(var application in applications)
             {
                 var user = await _identity.GetUserById(application.CandidateId);
-                var userClaims = await _userManager.GetClaimsAsync(user);
+                var candidate = await _context.Candidates.FirstOrDefaultAsync(e => e.UserId == user.Id);
 
-                user.Claims = userClaims
-                .Select(claim => new IdentityUserClaim<string>
-                {
-                    ClaimType = claim.Type,
-                    ClaimValue = claim.Value
-                })
-                .ToList();
-
-                application.User = user;
+                application.Candidate = candidate;
             }
             return applications;
         }
@@ -212,7 +208,9 @@ namespace Bussiness_Logic_Layer.Services
         {
             if (request == null)
                 throw new Exception("Request was empty");
+
             var job = await _context.Jobs.FirstOrDefaultAsync(j=>j.Id == request.JobId);
+
             if(job == null)
                 throw new Exception("Couldnt find job!");
 
@@ -245,9 +243,12 @@ namespace Bussiness_Logic_Layer.Services
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(status))
                 throw new Exception("Request data was empty");
+
             var application = await _context.JobApplications.FirstOrDefaultAsync(j=>j.Id == id);
+
             if (application == null)
                 throw new Exception("Application does not exist");
+
             application.Status = status;
             _context.Update(application);
             await _context.SaveChangesAsync();
@@ -285,10 +286,12 @@ namespace Bussiness_Logic_Layer.Services
                 throw new Exception("Id was empty");
 
             var application = await _context.JobApplications.FirstOrDefaultAsync(j => j.Id == id);
+
             if (application == null)
             {
                 throw new Exception("Couldnt find application");
             }
+
             _context.JobApplications.Remove(application);
             await _context.SaveChangesAsync();
 

@@ -27,7 +27,6 @@ export const Registration = async (form:FormData) => {
       return false
     }
 };
-
 export const LoginUser = async (credentials: object) => {
   try {
     const response = await axios.post(`${API_URL}Auth/login`, credentials);
@@ -57,7 +56,6 @@ export const LoginUser = async (credentials: object) => {
     return false
   }
 };
-
 export const fetchUser = async (token: string,id :string) => {
   try {
     const response = await axios.get(`${API_URL}Users/get-user/${id}`, {
@@ -71,12 +69,13 @@ export const fetchUser = async (token: string,id :string) => {
       console.error(error);
     }
 };
-
 export const saveAdditionalData = async (token: string, data: object) => {
   try {
+    console.log(data);
     const response = await axios.put(`${API_URL}Users/update-additional-info/`, data, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'  // Set content type to JSON
       }
     });
     console.log(response.data);
@@ -95,7 +94,6 @@ export const saveAdditionalData = async (token: string, data: object) => {
     return false;
   }
 }
-
 export const fetchJob = async (token: string,id :string) => {
   try {
     const response = await axios.get(`${API_URL}Jobs/get-job/${id}`, {
@@ -109,7 +107,6 @@ export const fetchJob = async (token: string,id :string) => {
       console.error(error);
     }
 };
-
 export const fetchJobs = async () => {
   try {
     const response = await axios.get(`${API_URL}Jobs/get-jobs`);
@@ -128,7 +125,6 @@ export const fetchFilteredJobs = async (filter:any) => {
       console.error(error);
     }
 }
-
 export const hasApplied = async (userId: string, jobId: string) => {
   try {
     const response = await axios.get(`${API_URL}Jobs/has-applied?userId=${userId}&jobId=${jobId}`);
@@ -139,7 +135,6 @@ export const hasApplied = async (userId: string, jobId: string) => {
     return false;
   }
 }
-
 export const ApplyJob = async (token: string, data: object) => {
   try {
     const response = await axios.post(`${API_URL}Jobs/add-application`, data, {

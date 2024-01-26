@@ -16,7 +16,7 @@ namespace Bussiness_Logic_Layer.Services
     public interface IAuthService
     {
         Task<string> Login(LoginDTO request);
-        Task Register(RegisterUserDTO request);
+        Task Register(RegisterCandidateDTO request);
         Task Register(RegisterCompanyDTO request);
         string GenerateToken(User user, IList<string> roles);
     }
@@ -25,12 +25,14 @@ namespace Bussiness_Logic_Layer.Services
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly INotificationsService _notifications;
+        private readonly AppDbContext _context;
 
-        public AuthService(UserManager<User> userManager,IConfiguration configuration,INotificationsService notifications)
+        public AuthService(UserManager<User> userManager,IConfiguration configuration,INotificationsService notifications,AppDbContext context)
         {
             _userManager = userManager;
             _configuration = configuration;
             _notifications = notifications;
+            _context = context;
         }
         public async Task<string> Login(LoginDTO request)
         {
@@ -89,12 +91,18 @@ namespace Bussiness_Logic_Layer.Services
                 photoBytes = memoryStream.ToArray();
             }
 
-            await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Photo, Convert.ToBase64String(photoBytes)));
-            await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Founded, request.Founded));
-            await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Founder, request.Founder));
-            await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.NoEmployees, request.NoEmployees));
-            await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Website, request.Website));
-            await _userManager.AddClaimAsync(_user, new Claim(CompanyClaimTypes.Description, request.Description));
+            var employer = new Employer
+            {
+                UserId = _user.Id,
+                Founded = request.Founded,
+                Founder = request.Founder,
+                Photo = Convert.ToBase64String(photoBytes),
+                Description = request.Description,
+                NoEmployees = request.NoEmployees,
+                Website = request.Website
+            };
+            await _context.Employers.AddAsync(employer);
+            
 
             var notification = new Notification
             {
@@ -107,11 +115,16 @@ namespace Bussiness_Logic_Layer.Services
             await _notifications.AddNotification(notification);
         }
 
-        public async Task Register(RegisterUserDTO request)
+        public async Task Register(RegisterCandidateDTO request)
         {
             if (request == null)
             {
                 throw new Exception("User is not provided");
+            }
+            var users = await _userManager.FindByEmailAsync(request.Email);
+            if (users != null)
+            {
+                throw new Exception("This email already exists");
             }
             var _user = new User
             {
@@ -129,7 +142,7 @@ namespace Bussiness_Logic_Layer.Services
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 throw new Exception(errors);
             }
-            await _userManager.AddToRoleAsync(_user, "User");
+            await _userManager.AddToRoleAsync(_user, "Candidate");
 
             byte[] photoBytes;
             using (var memoryStream = new MemoryStream())
@@ -138,10 +151,16 @@ namespace Bussiness_Logic_Layer.Services
                 photoBytes = memoryStream.ToArray();
             }
 
-            await _userManager.AddClaimAsync(_user,new Claim(UserClaimTypes.Photo, Convert.ToBase64String(photoBytes)));
-            await _userManager.AddClaimAsync(_user, new Claim(UserClaimTypes.Gender, request.Gender));
-            await _userManager.AddClaimAsync(_user, new Claim(UserClaimTypes.Position, request.Position));
-            await _userManager.AddClaimAsync(_user, new Claim(UserClaimTypes.DateOfBirth, request.DateOfBirth));
+            var candidate = new Candidate
+            {
+                UserId = _user.Id,
+                Photo = Convert.ToBase64String(photoBytes),
+                Gender = request.Gender,
+                Position = request.Position,
+                DateOfBirth = request.DateOfBirth
+            };
+
+            await _context.Candidates.AddAsync(candidate);
 
             var notification = new Notification
             {
@@ -152,6 +171,7 @@ namespace Bussiness_Logic_Layer.Services
                 DateTimeCreated = DateTime.UtcNow
             };
             await _notifications.AddNotification(notification);
+
         }
         public string GenerateToken(User user, IList<string> roles)
         {

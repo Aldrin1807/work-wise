@@ -10,6 +10,8 @@ namespace DataAccessLayer.Data
         public DbSet<JobApplication> JobApplications { get; set; }
         public DbSet<Job> Jobs { get; set; }
         public DbSet<UserExperience> UserExperiences { get; set; }
+        public DbSet<Employer> Employers { get; set; }
+        public DbSet<Candidate> Candidates { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
@@ -20,7 +22,19 @@ namespace DataAccessLayer.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuration for cascade delete on User's related entities
+            modelBuilder.Entity<Employer>()
+            .HasOne(e => e.User)
+            .WithOne()
+            .HasForeignKey<Employer>(e => e.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Candidate>()
+            .HasOne(e => e.User)
+            .WithOne()
+            .HasForeignKey<Candidate>(e => e.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
             // 1 user ka shume notifikime
             modelBuilder.Entity<User>()
@@ -29,13 +43,13 @@ namespace DataAccessLayer.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             //1 user ka shume aplikime
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<Candidate>()
                 .HasMany(u => u.JobApplications)
-                .WithOne(ja => ja.User)
+                .WithOne(ja => ja.Candidate)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // 1 user qe eshte company ka shume postime
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<Employer>()
                 .HasMany(u => u.JobsPosted)
                 .WithOne(j => j.Company)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -45,7 +59,7 @@ namespace DataAccessLayer.Data
             modelBuilder.Entity<JobApplication>()
                 .HasKey(up => new { up.Id,up.CandidateId, up.JobId});
             modelBuilder.Entity<JobApplication>()
-                .HasOne(u => u.User)
+                .HasOne(u => u.Candidate)
                 .WithMany(p => p.JobApplications)
                 .HasForeignKey(u => u.CandidateId)
                 .OnDelete(DeleteBehavior.Restrict);

@@ -10,8 +10,7 @@ namespace Bussiness_Logic_Layer.Services
     {
         Task<User> GetUserById(string id);
         Task<User> GetEmployerById(string id);
-        string GetUserClaimValue(IEnumerable<Claim> claims, string claimType);
-        Task<string> GetUserPhoto(User user);
+
     }
     public class IdentityService:IIdentityService
     {
@@ -43,15 +42,6 @@ namespace Bussiness_Logic_Layer.Services
             return user;
         }
 
-        public string GetUserClaimValue(IEnumerable<Claim> claims, string claimType)
-        {
-            var claim = claims.FirstOrDefault(c => c.Type == claimType);
-            return claim?.Value ?? string.Empty;
-        }
-        public async Task<string> GetUserPhoto(User user)
-        {
-            var claims = await _userManager.GetClaimsAsync(user);
-            return claims.FirstOrDefault(c => c.Type == UserClaimTypes.Photo).Value;
-        }
+        
     }
 }

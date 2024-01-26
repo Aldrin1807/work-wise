@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { fetchEmployers } from "../api/employer-api";
 
 export default function Employers(){
-    const[employersData,setEmployersData] = useState([] as any);
+    const[employersData,setEmployersData] = useState([] as any[]);
 
     useEffect(()=>{
         const fetchData = async () => {
@@ -55,7 +55,8 @@ export default function Employers(){
         <section className="section">
             <div className="container">
                 <div className="row g-4 gy-5">
-                    {employersData.map((item:any,index:any)=>{
+                    {employersData && employersData.map((item:any,index:any)=>{
+                        console.log(item.id)
                         return(
                             <div className="col-lg-3 col-md-4 col-sm-6 col-12" key={index}>
                                 <div className="employer-card position-relative bg-white rounded shadow p-4 mt-3">
@@ -64,14 +65,14 @@ export default function Employers(){
                                     </div>
 
                                     <div className="content mt-3">
-                                        <Link to={`/employer-profile/${item.id}`} className="title text-dark h5">{item.companyName}</Link>
-
+                                        <Link to={`/employer-profile/${item.userId}`} className="title text-dark h5">{item.user?.userName}</Link>
+                                        
                                         <p className="text-muted mt-2 mb-0">{item.description.slice(0, 40)}...</p>
                                     </div>
 
                                     <ul className="list-unstyled d-flex justify-content-between align-items-center border-top mt-3 pt-3 mb-0">
-                                        <li className="text-muted d-inline-flex align-items-center"><FiMapPin className="fea icon-sm me-1 align-middle"/>{item.location}</li>
-                                        <li className="list-inline-item text-primary fw-medium">{item.jobs.length} Vacancies</li>
+                                        <li className="text-muted d-inline-flex align-items-center"><FiMapPin className="fea icon-sm me-1 align-middle"/>{item.user?.location}</li>
+                                        <li className="list-inline-item text-primary fw-medium">{item.jobsPosted?.length} Vacancies</li>
                                     </ul>
                                 </div>
                             </div>

@@ -3,8 +3,6 @@ import { Modal, Button, Form} from 'react-bootstrap';
 import AsyncSelect from 'react-select/async';
 import axios from 'axios';
 import { FaPlus, FaTimes } from 'react-icons/fa';
-import { ActionMeta } from 'react-select';
-import OptionTypeBase from 'react-select';
 import { BsX } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
 import { fetchUser, saveAdditionalData } from '../../api/user-api';
@@ -58,7 +56,7 @@ const ExperienceModal: React.FC<{ show: boolean, onHide: () => void, onSave: (ex
         setValidationError('Please fill in all required fields.');
         return;
       }
-  
+      console.log(experience);
       setValidationError('');
       onSave(experience);
       resetExperience(); // Reset experience data
@@ -136,11 +134,11 @@ const UserProfileModal: React.FC<UserProfileModalProps> = (props) => {
       const data = await fetchUser(user.token ,user.userId);
       setUserData({
         userId:user.userId,
-        introduction: data.introduction,
-        skills: data.skills,
-        experiences: data.experiences
+        introduction: data.introduction ?? '',
+        skills: data.skills?? '',
+        experiences: data.experiences?? [] as Experience[],
       });
-      setSelectedSkills(data.skills.split(',').map((skill: string) => ({ value: skill, label: skill })));
+      setSelectedSkills(data.skills && data.skills.split(',').map((skill: string) => ({ value: skill, label: skill })));
       
     }
     response();
@@ -190,8 +188,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = (props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(userData.experiences);
-    if (userData.introduction.length < 10) {
+    if (userData.introduction === '') {
         setValidationError('Please fill in all required fields.')
         return;
     }
@@ -268,7 +265,7 @@ const [validationError, setValidationError] = useState<string>('');
                     <FaPlus onClick={() => setShowExperienceModal(true)}/>
                 </div>
                 <div className="experiences-container mb-3">
-                    {userData.experiences.map((experience, index) => (
+                    {userData && userData.experiences.map((experience, index) => (
                     <div key={index} className="experience-item d-flex flex-column p-3 border">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                         <h5 className="mb-0">{experience.companyName} : <span className='h6'>{experience.dateFrom} to {experience.dateTo}</span></h5>

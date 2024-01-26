@@ -21,7 +21,7 @@ namespace API_Layer.Controllers
         {
             try
             {
-                var user = await _service.GetUser(id);
+                var user = await _service.GetCandidate(id);
                 return Ok(user);
             }
             catch (Exception ex)

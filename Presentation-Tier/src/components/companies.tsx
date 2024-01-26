@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { fetchEmployers } from "../api/employer-api";
 
 export default function Companies(){
-    const[employersData,setEmployersData] = useState([] as any);
+    const[employersData,setEmployersData] = useState([] as any[]);
 
     useEffect(()=>{
         const fetchData = async () => {
@@ -46,8 +46,8 @@ export default function Companies(){
                                         <img src={`data:image/png;base64, ${item.photo}`} className="rounded-pill shadow border border-3 avatar avatar-small" alt=""/>
         
                                         <div className="content ms-3">
-                                            <Link to="/employer-profile" className="h5 title text-dark">{item.companyName}</Link>
-                                            <span className="text-muted d-flex align-items-center small mt-1">{item.jobs.length} Vacancies</span>
+                                            <Link to={`/employer-profile/${item.userId}`} className="h5 title text-dark">{item.user.userName}</Link>
+                                            <span className="text-muted d-flex align-items-center small mt-1">{item.jobsPosted.length} Vacancies</span>
                                         </div>
                                     </div>
                                 </div>

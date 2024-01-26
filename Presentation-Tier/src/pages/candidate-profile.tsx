@@ -14,34 +14,21 @@ import { CiEdit } from "react-icons/ci";
 export default function CandidateProfile(){
     let params = useParams();
     const id = params.id
-    const [userData,setUserData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        phoneNumber: '',
-        gender: '',
-        photo: null,
-        location: '',
-        position: '',
-        dateOfBirth: '',
-        introduction: '',
-        skills: '',
-        experiences: [] as any
-    });
+    const [userData,setUserData] = useState<any>({});
     const [changed,setChanged] = useState(false);
     const user = useSelector((state:any) => state.user);
 
     useEffect(()=>{
-        if(user.token==null){
+        if(!user.isAuthenticated){
             return;
         }
         const fetchData = async () => {
+            console.log(id);
             const getUser = await fetchUser(user.token, id || '');
             setUserData(getUser);
         };
         fetchData();
-
+        console.log(userData)
 
     },[changed])
 
@@ -52,7 +39,9 @@ export default function CandidateProfile(){
     };
     return(
         <>
-        <UserProfileModal showModal={prfModal} setShowModal={setPrfModal} changed={changed} setChanged={setChanged}/>
+        {user.userId == id && (
+            <UserProfileModal showModal={prfModal} setShowModal={setPrfModal} changed={changed} setChanged={setChanged}/>
+        )}
         <Navbar navClass={""} navLight={false}/>
         <section className="section">
             <div className="container">
@@ -67,7 +56,7 @@ export default function CandidateProfile(){
                                     <img src={`data:image/png;base64, ${userData.photo}`} className="rounded-pill shadow border border-3 avatar avatar-medium" alt=""/>
 
                                     <div className="ms-2">
-                                        <h5 className="mb-0">{userData?.firstName +' '+ userData?.lastName}</h5>
+                                        <h5 className="mb-0">{userData.user?.firstName +' '+ userData.user?.lastName}</h5>
                                         <p className="text-muted mb-0">{userData.position}</p>
                                     </div>
                                 </div>
@@ -83,7 +72,7 @@ export default function CandidateProfile(){
 
             <div className="container mt-4">
                 <div className="row g-4">
-                    {userData.introduction === ''?(
+                    {userData.introduction == null?(
                         <div className="col-lg-8 col-md-7 col-12">
                             {user.userId == id?(
                                 <p className="text-center">Add additional data by clicking the edit icon above</p>
@@ -102,7 +91,7 @@ export default function CandidateProfile(){
                         <div className="row">
                             
                             <div className="col-lg-6 col-12">
-                                {userData.skills.split(',').map((skill, index) => (
+                                {userData.skills && userData.skills.split(',').map((skill:any, index:any) => (
                                         <div className="progress-box mt-4" key={index}>
                                             <h6 className="font-weight-normal">{skill.trim()}</h6>
                                             <div className="progress">
@@ -116,7 +105,7 @@ export default function CandidateProfile(){
                         <h5 className="mt-4">Experience:</h5>
 
                         <div className="row">
-                            {userData.experiences.map((experience: { companyName: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; dateFrom: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; dateTo: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; position: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; description: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }, index: Key | null | undefined) => (
+                            {userData.experiences && userData.experiences.map((experience: { companyName: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; dateFrom: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; dateTo: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; position: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; description: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }, index: Key | null | undefined) => (
                                 <div key={index} className="experience-item d-flex flex-column p-3 border">
                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                     <h5 className="mb-0">{experience.position} : <span className='h6'>{experience.companyName}</span></h5>
@@ -136,7 +125,7 @@ export default function CandidateProfile(){
                             <div className="mt-3">
                                 <div className="d-flex align-items-center justify-content-between mt-3">
                                     <span className="d-inline-flex align-items-center text-muted fw-medium"><FiMail className="fea icon-sm me-2"/> Email:</span>
-                                    <span className="fw-medium">{userData.email}</span>
+                                    <span className="fw-medium">{userData.user?.email}</span>
                                 </div>
 
                                 <div className="d-flex align-items-center justify-content-between mt-3">
@@ -151,12 +140,12 @@ export default function CandidateProfile(){
 
                                 <div className="d-flex align-items-center justify-content-between mt-3">
                                     <span className="d-inline-flex align-items-center text-muted fw-medium"><FiGlobe className="fea icon-sm me-2"/> Country:</span>
-                                    <span className="fw-medium">{userData.location}</span>
+                                    <span className="fw-medium">{userData.user?.location}</span>
                                 </div>
 
                                 <div className="d-flex align-items-center justify-content-between mt-3">
                                     <span className="d-inline-flex align-items-center text-muted fw-medium"><FiPhone className="fea icon-sm me-2"/> Mobile:</span>
-                                    <span className="fw-medium">{userData.phoneNumber}</span>
+                                    <span className="fw-medium">{userData.user?.phoneNumber}</span>
                                 </div>
 
                             </div>

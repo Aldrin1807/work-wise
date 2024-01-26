@@ -1,4 +1,5 @@
-﻿using Bussiness_Logic_Layer.DTOs;
+﻿using Azure.Core;
+using Bussiness_Logic_Layer.DTOs;
 using DataAccessLayer.Constants;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
@@ -10,8 +11,8 @@ namespace Bussiness_Logic_Layer.Services
 {
     public interface IEmployerService
     {
-        Task<EmployerDTO> GetEmployer(string id);
-        Task<List<EmployerDTO>> GetEmployers();
+        Task<Employer> GetEmployer(string id);
+        Task<List<Employer>> GetEmployers();
     }
     public class EmployerService:IEmployerService
     {
@@ -26,7 +27,7 @@ namespace Bussiness_Logic_Layer.Services
         }
 
         #region GET
-        public async Task<EmployerDTO> GetEmployer(string id)
+        public async Task<Employer> GetEmployer(string id)
         {
             if (id == null)
             {
@@ -34,64 +35,37 @@ namespace Bussiness_Logic_Layer.Services
             }
 
             var user = await _identity.GetEmployerById(id);
-            
-            var claims = await _userManager.GetClaimsAsync(user);
+            var employer = await _context.Employers.FirstOrDefaultAsync(e=>e.UserId == user.Id);
 
-            var _employer = new EmployerDTO
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                CompanyName = user.UserName,
-                Founded = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Founded),
-                Founder = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Founder),
-                Description = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Description),
-                Location = user.Location,
-                NoEmployees = _identity.GetUserClaimValue(claims,CompanyClaimTypes.NoEmployees),
-                PhoneNumber = user.PhoneNumber,
-                Photo = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Photo),
-                Website = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Website)
-            };
+            employer.User = user;
 
             var _jobs = await _context.Jobs.Where(j => j.CompanyId == id).ToListAsync();
             if (_jobs != null)
             {
-                _employer.Jobs = _jobs;
+                employer.JobsPosted = _jobs;
             }
 
-            return _employer;
+            return employer;
         }
 
-        public async Task<List<EmployerDTO>> GetEmployers()
+        public async Task<List<Employer>> GetEmployers()
         {
             var employers = await _userManager.GetUsersInRoleAsync("Employer");
 
-            List<EmployerDTO> employersList = new List<EmployerDTO>();
+            List<Employer> employersList = new List<Employer>();
 
             foreach(var user in employers)
             {
-                var claims = await _userManager.GetClaimsAsync(user);
-                var _employer = new EmployerDTO
-                {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    CompanyName = user.UserName,
-                    Founded = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Founded),
-                    Founder = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Founder),
-                    Description = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Description),
-                    Location = user.Location,
-                    NoEmployees = _identity.GetUserClaimValue(claims, CompanyClaimTypes.NoEmployees),
-                    PhoneNumber = user.PhoneNumber,
-                    Photo = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Photo),
-                    Website = _identity.GetUserClaimValue(claims, CompanyClaimTypes.Website)
-                };
+                var employer = await _context.Employers.FirstOrDefaultAsync(e => e.UserId == user.Id);
+
+                employer.User = user;
+
                 var _jobs = await _context.Jobs.Where(j => j.CompanyId == user.Id).ToListAsync();
                 if (_jobs != null)
                 {
-                    _employer.Jobs = _jobs;
+                    employer.JobsPosted = _jobs;
                 }
-                employersList.Add(_employer);
+                employersList.Add(employer);
             }
 
             return employersList;
@@ -100,6 +74,6 @@ namespace Bussiness_Logic_Layer.Services
 
         #endregion
 
-        
+
     }
 }
