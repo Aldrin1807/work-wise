@@ -103,7 +103,7 @@ export const fetchEmployers = async () => {
 }
 export const fetchCandidates = async (token: string, id: string) => {
   try {
-    const response = await axios.get(`${API_URL}Jobs/get-job-applications/${id}`, {
+    const response = await axios.get(`${API_URL}JobApplications/get-job-applications/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -116,7 +116,7 @@ export const fetchCandidates = async (token: string, id: string) => {
 }
 export const updateStatus = async (token: string, id: string, status: string) => {
   try {
-    const response = await axios.put(`${API_URL}Jobs/update-job-application/${id}`, status, {
+    const response = await axios.put(`${API_URL}JobApplications/update-job-application/${id}`, status, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'  // Set content type to JSON

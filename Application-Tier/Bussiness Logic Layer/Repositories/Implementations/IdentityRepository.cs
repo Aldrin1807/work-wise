@@ -1,21 +1,15 @@
-﻿using DataAccessLayer.Constants;
+﻿using Bussiness_Logic_Layer.Repositories.Interfaces;
+using Bussiness_Logic_Layer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
-namespace Bussiness_Logic_Layer.Services
+namespace Bussiness_Logic_Layer.Repositories.Implementations
 {
-    public interface IIdentityService
-    {
-        Task<User> GetUserById(string id);
-        Task<User> GetEmployerById(string id);
-
-    }
-    public class IdentityService:IIdentityService
+    public class IdentityRepository: IIdentityRepository
     {
         private readonly UserManager<User> _userManager;
-        public IdentityService(UserManager<User> userManager, AppDbContext context)
+        public IdentityRepository(UserManager<User> userManager, AppDbContext context)
         {
             _userManager = userManager;
         }
@@ -33,7 +27,7 @@ namespace Bussiness_Logic_Layer.Services
         public async Task<User> GetEmployerById(string id)
         {
             var users = await _userManager.GetUsersInRoleAsync("Employer");
-            var user = users.FirstOrDefault(u=>u.Id == id);
+            var user = users.FirstOrDefault(u => u.Id == id);
             if (user == null)
             {
                 throw new Exception("Employer does not exist");
@@ -41,7 +35,5 @@ namespace Bussiness_Logic_Layer.Services
 
             return user;
         }
-
-        
     }
 }

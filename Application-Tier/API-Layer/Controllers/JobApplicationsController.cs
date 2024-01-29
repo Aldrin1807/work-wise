@@ -1,8 +1,5 @@
-﻿using Azure.Core;
-using Bussiness_Logic_Layer.DTOs;
+﻿using Bussiness_Logic_Layer.DTOs;
 using Bussiness_Logic_Layer.Repositories.Interfaces;
-using Bussiness_Logic_Layer.Services;
-using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,21 +7,35 @@ namespace API_Layer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class JobsController : ControllerBase
+    public class JobApplicationsController : ControllerBase
     {
-        private readonly IJobRepository _repository;
-        public JobsController(IJobRepository repository)
+        private readonly IJobApplicationRepository _repository;
+        public JobApplicationsController(IJobApplicationRepository repository)
         {
             _repository = repository;
         }
         #region GET
-        [HttpGet("get-job/{id}")]
-        public async Task<IActionResult> GetJob(string id)
+        [HttpGet("get-candidate-applications/{id}")]
+        public async Task<IActionResult> GetCandidateApplications(string id)
         {
             try
             {
-                var job = await _repository.GetJob(id);
-                return Ok(job);
+                var application = await _repository.GetCandidateApplications(id);
+                return Ok(application);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
+        [HttpGet("get-job-applications/{id}")]
+        public async Task<IActionResult> GetJobApplications(string id)
+        {
+            try
+            {
+                var response = await _repository.GetJobApplications(id);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -33,43 +44,13 @@ namespace API_Layer.Controllers
             }
         }
 
-        [HttpGet("get-my-jobs/{id}")]
-        public async Task<IActionResult> GetEmployersJobs(string id)
+        [HttpGet("has-applied")]
+        public async Task<IActionResult> HasApplied([FromQuery] string userId, [FromQuery] string jobId)
         {
             try
             {
-                var jobs = await _repository.GetEmployersJobs(id);
-                return Ok(jobs);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new Response
-                { Status = "Error", Message = ex.Message });
-            }
-        }
-
-        [HttpGet("get-jobs")]
-        public async Task<IActionResult> GetPopularJobs()
-        {
-            try
-            {
-                var jobs = await _repository.GetJobs();
-                return Ok(jobs);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new Response
-                { Status = "Error", Message = ex.Message });
-            }
-        }
-
-        [HttpGet("get-filtered-jobs")]
-        public async Task<IActionResult> GetFilteredJobs([FromQuery] string? keyword,[FromQuery] string? location, [FromQuery] string? type)
-        {
-            try
-            {
-                var jobs = await _repository.GetFilteredJobs(keyword,location,type);
-                return Ok(jobs);
+                var response = await _repository.HasApplied(userId, jobId);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -80,14 +61,32 @@ namespace API_Layer.Controllers
         #endregion
 
         #region POST
-        [HttpPost("post-job")]
-        public async Task<IActionResult> PostJob([FromBody] JobDTO request)
+        [HttpPost("add-application")]
+        public async Task<IActionResult> AddApplication([FromBody] JobApplicationDTO request)
         {
             try
             {
-                await _repository.PostJob(request);
+                await _repository.AddJobApplication(request);
                 return Ok(new Response
-                { Status = "Success", Message = "Job posted succesfully" });
+                { Status = "Success", Message = "Applied succesfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
+        #endregion
+
+        #region PUT
+        [HttpPut("update-job-application/{id}")]
+        public async Task<IActionResult> UpdateJobApplication(string id, [FromBody] string status)
+        {
+            try
+            {
+                await _repository.UpdateJobApplication(id, status);
+                return Ok(new Response
+                { Status = "Success", Message = "Succesfully updated" });
             }
             catch (Exception ex)
             {
@@ -98,12 +97,12 @@ namespace API_Layer.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("delete-job/{id}")]
-        public async Task<IActionResult> DeleteJob(string id)
+        [HttpDelete("remove-application/{id}")]
+        public async Task<IActionResult> RemoveApplication(string id)
         {
             try
             {
-                await _repository.DeleteJob(id);
+                await _repository.RemoveApplication(id);
                 return Ok(new Response
                 { Status = "Success", Message = "Removed succesfully" });
             }
@@ -114,6 +113,5 @@ namespace API_Layer.Controllers
             }
         }
         #endregion
-
     }
 }

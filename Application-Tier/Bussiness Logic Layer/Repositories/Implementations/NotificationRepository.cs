@@ -1,22 +1,14 @@
-﻿using DataAccessLayer.Data;
+﻿using Bussiness_Logic_Layer.Repositories.Interfaces;
+using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bussiness_Logic_Layer.Services
+namespace Bussiness_Logic_Layer.Repositories.Implementations
 {
-    public interface INotificationsService
-    {
-        Task<List<Notification>> GetNotifications(string id);
-        Task AddNotification(Notification notification);
-        Task DeleteNotification(string id);
-        Task UpdateStatus(string id,string status);
-        Task UpdateStatuses(string userId, string status);
-
-    }
-    public class NotificationsService:INotificationsService
+    public class NotificationRepository:INotificationRepository
     {
         private readonly AppDbContext _context;
-        public NotificationsService(AppDbContext context)
+        public NotificationRepository(AppDbContext context)
         {
             _context = context;
         }
@@ -45,7 +37,7 @@ namespace Bussiness_Logic_Layer.Services
             _context.Notifications.Remove(notification);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateStatus(string id,string status)
+        public async Task UpdateStatus(string id, string status)
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(status))
                 throw new Exception("Request was empty");
@@ -57,13 +49,13 @@ namespace Bussiness_Logic_Layer.Services
             _context.Notifications.Update(notification);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateStatuses(string userId,string status)
+        public async Task UpdateStatuses(string userId, string status)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(status))
                 throw new Exception("Request was empty");
 
             var notifications = await _context.Notifications.Where(n => n.UserId == userId).ToListAsync();
-            foreach(var notification in notifications)
+            foreach (var notification in notifications)
             {
                 notification.Status = status;
                 _context.Update(notification);

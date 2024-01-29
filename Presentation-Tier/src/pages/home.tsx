@@ -142,7 +142,7 @@ export default function Home(){
                 <div className="row g-4 mt-0">
                     {jobData.slice(0,6).map((item:any) => {
                         return(
-                        <div className="col-lg-4 col-md-6 col-12" key={item.id}>
+                        <div className="col-md-6 col-12" key={item.id}>
                             <div className="job-post rounded shadow bg-white">
                                 <div className="p-4">
                                     <Link to={`/job-detail/${item.id}`} className="text-dark title h5">{item.jobTitle}</Link>

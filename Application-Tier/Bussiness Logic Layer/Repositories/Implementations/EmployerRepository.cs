@@ -1,25 +1,18 @@
-﻿using Azure.Core;
-using Bussiness_Logic_Layer.DTOs;
-using DataAccessLayer.Constants;
+﻿using Bussiness_Logic_Layer.Repositories.Interfaces;
+using Bussiness_Logic_Layer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
-namespace Bussiness_Logic_Layer.Services
+namespace Bussiness_Logic_Layer.Repositories.Implementations
 {
-    public interface IEmployerService
-    {
-        Task<Employer> GetEmployer(string id);
-        Task<List<Employer>> GetEmployers();
-    }
-    public class EmployerService:IEmployerService
+    public class EmployerRepository: IEmployerRepository
     {
         private readonly UserManager<User> _userManager;
         private readonly AppDbContext _context;
-        private readonly IIdentityService _identity;
-        public EmployerService(UserManager<User> userManager, AppDbContext context,IIdentityService identity)
+        private readonly IIdentityRepository _identity;
+        public EmployerRepository(UserManager<User> userManager, AppDbContext context, IIdentityRepository identity)
         {
             _userManager = userManager;
             _context = context;
@@ -35,7 +28,7 @@ namespace Bussiness_Logic_Layer.Services
             }
 
             var user = await _identity.GetEmployerById(id);
-            var employer = await _context.Employers.FirstOrDefaultAsync(e=>e.UserId == user.Id);
+            var employer = await _context.Employers.FirstOrDefaultAsync(e => e.UserId == user.Id);
 
             employer.User = user;
 
@@ -54,7 +47,7 @@ namespace Bussiness_Logic_Layer.Services
 
             List<Employer> employersList = new List<Employer>();
 
-            foreach(var user in employers)
+            foreach (var user in employers)
             {
                 var employer = await _context.Employers.FirstOrDefaultAsync(e => e.UserId == user.Id);
 
@@ -73,7 +66,6 @@ namespace Bussiness_Logic_Layer.Services
         }
 
         #endregion
-
 
     }
 }

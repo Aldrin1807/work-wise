@@ -1,5 +1,6 @@
 ﻿using Bussiness_Logic_Layer.DTOs;
 using Bussiness_Logic_Layer.Services;
+using Bussiness_Logic_Layer.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,18 +10,20 @@ namespace API_Layer.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _service;
-        public AuthController(IAuthService service)
+        private readonly IAuthenticationService _authService;
+        private readonly IRegistrationService _registrationService;
+        public AuthController(IAuthenticationService service,IRegistrationService registrationService)
         {
-            _service = service;
+            _authService = service;
+            _registrationService = registrationService;
         }
-
+        #region REGISTER
         [HttpPost("register-user")]
         public async Task<IActionResult> RegisterUser([FromForm] RegisterCandidateDTO request)
         {
             try
             {
-                await _service.Register(request);
+                await _registrationService.Register(request);
                 return Ok(new Response
                 { Status = "Success", Message = "Successfully registered." });
             }
@@ -35,7 +38,7 @@ namespace API_Layer.Controllers
         {
             try
             {
-                await _service.Register(request);
+                await _registrationService.Register(request);
                 return Ok(new Response
                 { Status = "Success", Message = "Successfully registered." });
             }
@@ -45,13 +48,15 @@ namespace API_Layer.Controllers
                 { Status = "Error", Message = ex.Message });
             }
         }
+        #endregion
 
+        #region LOGIN
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]LoginDTO request)
         {
             try
             {
-                var token = await _service.Login(request);
+                var token = await _authService.Login(request);
                 return Ok(new Response
                 { Status = "Success", Message = token });
             }
@@ -61,5 +66,6 @@ namespace API_Layer.Controllers
                 { Status = "Error", Message = ex.Message });
             }
         }
+        #endregion
     }
 }

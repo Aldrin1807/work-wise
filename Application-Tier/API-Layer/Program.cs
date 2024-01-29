@@ -1,5 +1,8 @@
 
-using Bussiness_Logic_Layer.Services;
+using Bussiness_Logic_Layer.Repositories.Implementations;
+using Bussiness_Logic_Layer.Repositories.Interfaces;
+using Bussiness_Logic_Layer.Services.Implementations;
+using Bussiness_Logic_Layer.Services.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -51,12 +54,15 @@ namespace API_Layer
                 .AddDefaultTokenProviders();
 
 
-            builder.Services.AddScoped<IAuthService,AuthService> ();
-            builder.Services.AddScoped<IUsersService, UsersService>();
-            builder.Services.AddScoped<IEmployerService, EmployerService>();
-            builder.Services.AddScoped<IIdentityService, IdentityService>();
-            builder.Services.AddScoped<IJobsService, JobsService>();
-            builder.Services.AddScoped<INotificationsService, NotificationsService>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+            builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
+            builder.Services.AddScoped<IEmployerRepository, EmployerRepository>();
+            builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
+            builder.Services.AddScoped<IJobRepository, JobRepository>();
+            builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 
 

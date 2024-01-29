@@ -58,7 +58,7 @@ export const LoginUser = async (credentials: object) => {
 };
 export const fetchUser = async (token: string,id :string) => {
   try {
-    const response = await axios.get(`${API_URL}Users/get-user/${id}`, {
+    const response = await axios.get(`${API_URL}Candidate/get-user/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -72,7 +72,7 @@ export const fetchUser = async (token: string,id :string) => {
 export const saveAdditionalData = async (token: string, data: object) => {
   try {
     console.log(data);
-    const response = await axios.put(`${API_URL}Users/update-additional-info/`, data, {
+    const response = await axios.put(`${API_URL}Candidate/update-additional-info/`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'  // Set content type to JSON
@@ -127,7 +127,7 @@ export const fetchFilteredJobs = async (filter:any) => {
 }
 export const hasApplied = async (userId: string, jobId: string) => {
   try {
-    const response = await axios.get(`${API_URL}Jobs/has-applied?userId=${userId}&jobId=${jobId}`);
+    const response = await axios.get(`${API_URL}JobApplications/has-applied?userId=${userId}&jobId=${jobId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -137,7 +137,7 @@ export const hasApplied = async (userId: string, jobId: string) => {
 }
 export const ApplyJob = async (token: string, data: object) => {
   try {
-    const response = await axios.post(`${API_URL}Jobs/add-application`, data, {
+    const response = await axios.post(`${API_URL}JobApplications/add-application`, data, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -160,7 +160,7 @@ export const ApplyJob = async (token: string, data: object) => {
 }
 export const RemoveApplication = async (token: string, id: string) => {
   try {
-    const response = await axios.delete(`${API_URL}Jobs/remove-application/${id}`, {
+    const response = await axios.delete(`${API_URL}JobApplications/remove-application/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -183,7 +183,7 @@ export const RemoveApplication = async (token: string, id: string) => {
 }
 export const fetchApplications = async (token: string, id: string) => {
   try {
-    const response = await axios.get(`${API_URL}Jobs/get-candidate-applications/${id}`, {
+    const response = await axios.get(`${API_URL}JobApplications/get-candidate-applications/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

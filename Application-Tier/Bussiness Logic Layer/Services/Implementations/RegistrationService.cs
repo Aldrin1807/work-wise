@@ -1,59 +1,26 @@
 ﻿using Bussiness_Logic_Layer.DTOs;
-using DataAccessLayer.Constants;
+using Bussiness_Logic_Layer.Repositories.Interfaces;
+using Bussiness_Logic_Layer.Services.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.IdentityModel.Tokens;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
 using static DataAccessLayer.Constants.Enumerations;
 
-namespace Bussiness_Logic_Layer.Services
+namespace Bussiness_Logic_Layer.Services.Implementations
 {
-    public interface IAuthService
+    public class RegistrationService:IRegistrationService
     {
-        Task<string> Login(LoginDTO request);
-        Task Register(RegisterCandidateDTO request);
-        Task Register(RegisterCompanyDTO request);
-        string GenerateToken(User user, IList<string> roles);
-    }
-    public class AuthService:IAuthService
-    {
-        private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _configuration;
-        private readonly INotificationsService _notifications;
-        private readonly AppDbContext _context;
 
-        public AuthService(UserManager<User> userManager,IConfiguration configuration,INotificationsService notifications,AppDbContext context)
+        private readonly UserManager<User> _userManager;
+        private readonly AppDbContext _context;
+        private readonly INotificationRepository _notificationRepository;
+
+        public RegistrationService(UserManager<User> userManager, AppDbContext context,INotificationRepository notificationRepository)
         {
             _userManager = userManager;
-            _configuration = configuration;
-            _notifications = notifications;
             _context = context;
-        }
-        public async Task<string> Login(LoginDTO request)
-        {
-            var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user == null)
-            {
-                throw new Exception("Email does not exist");
-            }
-
-            if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
-            {
-                var roles = await _userManager.GetRolesAsync(user);
-                var token = GenerateToken(user, roles);
-
-                return token;
-            }
-            else
-            {
-                throw new Exception("Invalid password");
-            }
-
+            _notificationRepository = notificationRepository;
         }
 
         public async Task Register(RegisterCompanyDTO request)
@@ -63,7 +30,7 @@ namespace Bussiness_Logic_Layer.Services
                 throw new Exception("User is not provided");
             }
             var users = await _userManager.FindByEmailAsync(request.Email);
-            if(users != null)
+            if (users != null)
             {
                 throw new Exception("This email already exists");
             }
@@ -102,7 +69,7 @@ namespace Bussiness_Logic_Layer.Services
                 Website = request.Website
             };
             await _context.Employers.AddAsync(employer);
-            
+
 
             var notification = new Notification
             {
@@ -112,7 +79,7 @@ namespace Bussiness_Logic_Layer.Services
                 Type = Enum.GetName(NotificationType.Success),
                 DateTimeCreated = DateTime.UtcNow
             };
-            await _notifications.AddNotification(notification);
+            await _notificationRepository.AddNotification(notification);
         }
 
         public async Task Register(RegisterCandidateDTO request)
@@ -170,32 +137,8 @@ namespace Bussiness_Logic_Layer.Services
                 Type = Enum.GetName(NotificationType.Success),
                 DateTimeCreated = DateTime.UtcNow
             };
-            await _notifications.AddNotification(notification);
+            await _notificationRepository.AddNotification(notification);
 
-        }
-        public string GenerateToken(User user, IList<string> roles)
-        {
-
-            var claims = new[]
-            {
-                new Claim("Id", user.Id),
-                new Claim("Email", user.Email),
-                new Claim("Role", roles[0])
-            };
-
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
-                expires: DateTime.Now.AddHours(24), 
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

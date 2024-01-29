@@ -1,27 +1,20 @@
 ﻿using Bussiness_Logic_Layer.DTOs;
-using DataAccessLayer.Constants;
+using Bussiness_Logic_Layer.Repositories.Interfaces;
+using Bussiness_Logic_Layer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 
-namespace Bussiness_Logic_Layer.Services
+namespace Bussiness_Logic_Layer.Repositories.Implementations
 {
-    public interface IUsersService
+    public class CandidateRepository:ICandidateRepository
     {
-        Task<Candidate> GetCandidate(string id);
-        Task SaveAdditionalData(AdditionalDataDTO request);
-    }
-    public class UsersService : IUsersService
-    {
-        private readonly UserManager<User> _userManager;
         private readonly AppDbContext _context;
-        private readonly IIdentityService _identity;
-        public UsersService(UserManager<User> userManager,AppDbContext context,IIdentityService identity)
+        private readonly IIdentityRepository _identity;
+        public CandidateRepository(AppDbContext context, IIdentityRepository identity)
         {
-            _userManager = userManager;
             _context = context;
             _identity = identity;
         }
@@ -33,7 +26,7 @@ namespace Bussiness_Logic_Layer.Services
             }
 
             var user = await _identity.GetUserById(id);
-            var candidate = await _context.Candidates.FirstOrDefaultAsync(c=>c.UserId == user.Id);
+            var candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.UserId == user.Id);
             var _experiences = await _context.UserExperiences.Where(u => u.UserId == id).ToListAsync();
 
             if (!_experiences.IsNullOrEmpty())
@@ -79,12 +72,12 @@ namespace Bussiness_Logic_Layer.Services
                             Description = experience.Description,
                             UserId = experience.UserId
                         };
-                       await _context.UserExperiences.AddAsync(newExperience);
+                        await _context.UserExperiences.AddAsync(newExperience);
                     }
 
                 }
-                await _context.SaveChangesAsync();
             }
+            await _context.SaveChangesAsync();
 
         }
     }
