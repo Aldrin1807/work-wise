@@ -37,6 +37,7 @@ namespace Bussiness_Logic_Layer
             builder.Services.AddScoped<IJobRepository, JobRepository>();
             builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
 
 
 

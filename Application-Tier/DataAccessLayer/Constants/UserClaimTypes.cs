@@ -18,5 +18,9 @@
         public const string Website = "Website";
         public const string Description = "Description";
     }
+    public class RoleClaimTypes
+    {
+        public const string Description = "Description";
+    }
 }
 
