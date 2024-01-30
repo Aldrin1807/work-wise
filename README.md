@@ -10,3 +10,7 @@ Our approach attempts to improve the hiring process from the point of applicatio
 &nbsp;
 ![workwise](https://github.com/Aldrin1807/work-wise/assets/92091536/b2cd0b9c-e09d-4157-8e4c-a05be79c5fd5)
 
+&nbsp;
+&nbsp;
+&nbsp;
+The web app "workwise" has been built using React with TypeScript for the frontend, C# for the backend, and SCSS for styling.
