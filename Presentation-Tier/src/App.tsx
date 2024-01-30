@@ -19,7 +19,6 @@ import AboutUs from "./pages/aboutus";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import SignupEmployer from "./pages/signup-employer";
-import Terms from "./pages/terms";
 import Privacy from "./pages/privacy";
 import ContactUs from "./pages/contactus";
 import Error from "./pages/error";
@@ -40,7 +39,6 @@ function App() {
     { path: '/login', element: <Login /> },
     { path: '/signup', element: <Signup /> },
     { path: '/signup-employer', element: <SignupEmployer /> },
-    { path: '/terms', element: <Terms /> },
     { path: '/privacy', element: <Privacy /> },
     { path: '/contactus', element: <ContactUs /> },
     { path: '*', element: <Navigate to="/error" /> },

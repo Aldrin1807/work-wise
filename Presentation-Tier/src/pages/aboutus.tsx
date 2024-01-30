@@ -7,8 +7,8 @@ import About from "../components/aboutUs"
 import Footer from "../components/footer";
 import ScrollTop from "../components/scrollTop";
 
-import { servicesData, teamData } from "../data/data";
-import {FiFacebook, FiInstagram, FiTwitter, FiHelpCircle} from "../assets/icons/vander"
+import { servicesData} from "../data/data";
+import {FiHelpCircle} from "../assets/icons/vander"
 
 export default function AboutUs(){
     return(
@@ -28,7 +28,7 @@ export default function AboutUs(){
                 <div className="position-middle-bottom">
                     <nav aria-label="breadcrumb" className="d-block">
                         <ul className="breadcrumb breadcrumb-muted mb-0 p-0">
-                            <li className="breadcrumb-item"><Link to="/">Jobnova</Link></li>
+                            <li className="breadcrumb-item"><Link to="/">Workwise</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">About us</li>
                         </ul>
                     </nav>
@@ -44,13 +44,13 @@ export default function AboutUs(){
         </div>
 
         <section className="section">
-            <About containerClass="container"/>
+            <About containerClass="container" role={""}/>
 
             <div className="container mt-100 mt-60">
                 <div className="row justify-content-center mb-4 pb-2">
                     <div className="col-12">
                         <div className="section-title text-center">
-                            <h4 className="title mb-3">Here's why you'll love it Jobnova</h4>
+                            <h4 className="title mb-3">Here's why you'll love it Workwise</h4>
                             <p className="text-muted para-desc mx-auto mb-0">Search all the open positions on the web. Get your own personalized salary estimate. Read reviews on over 30000+ companies worldwide.</p>
                         </div>
                     </div>
@@ -84,43 +84,6 @@ export default function AboutUs(){
                 <div className="row justify-content-center">
                     <div className="col">
                         <div className="section-title text-center mb-4 pb-2">
-                            <h4 className="title mb-3">Our Minds</h4>
-                            <p className="text-muted para-desc mb-0 mx-auto">Search all the open positions on the web. Get your own personalized salary estimate. Read reviews on over 30000+ companies worldwide.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row g-4 mt-0">
-                    {teamData.map((item,index)=>{
-                        return(
-                        <div className="col-lg-3 col-md-4 col-12" key={index}>
-                            <div className="card team team-primary text-center">
-                                <div className="card-img team-image d-inline-block mx-auto rounded-pill avatar avatar-ex-large overflow-hidden">
-                                    <img src={item.image} className="img-fluid" alt=""/>
-                                    <div className="card-overlay avatar avatar-ex-large rounded-pill"></div>
-    
-                                    <ul className="list-unstyled team-social mb-0">
-                                        <li className="list-inline-item"><Link to="#" className="btn btn-sm btn-pills btn-icon"><FiFacebook className="icons fea-social"/></Link></li>
-                                        <li className="list-inline-item"><Link to="#" className="btn btn-sm btn-pills btn-icon"><FiInstagram className="icons fea-social"/></Link></li>
-                                        <li className="list-inline-item"><Link to="#" className="btn btn-sm btn-pills btn-icon"><FiTwitter className="icons fea-social"/></Link></li>
-                                    </ul>
-                                </div>
-    
-                                <div className="content mt-3">
-                                    <Link to="#" className="text-dark h5 mb-0 title">{item.name}</Link>
-                                    <h6 className="text-muted mb-0 fw-normal">{item.title}</h6>
-                                </div>
-                            </div>
-                        </div>
-                        )
-                    })}
-                </div>
-            </div>
-
-            <div className="container mt-100 mt-60">
-                <div className="row justify-content-center">
-                    <div className="col">
-                        <div className="section-title text-center mb-4 pb-2">
                             <h4 className="title mb-3">Questions & Answers</h4>
                             <p className="text-muted para-desc mb-0 mx-auto">Search all the open positions on the web. Get your own personalized salary estimate. Read reviews on over 30000+ companies worldwide.</p>
                         </div>
@@ -132,7 +95,7 @@ export default function AboutUs(){
                         <div className="d-flex">
                             <FiHelpCircle className="fea icon-ex-md text-primary me-2 mt-1"/>
                             <div className="flex-1">
-                                <h5 className="mt-0">How our <span className="text-primary">Jobnova</span> work ?</h5>
+                                <h5 className="mt-0">How our <span className="text-primary">Workwise</span> work ?</h5>
                                 <p className="answer text-muted mb-0">Due to its widespread use as filler text for layouts, non-readability is of great importance: human perception is tuned to recognize certain patterns and repetitions in texts.</p>
                             </div>
                         </div>
@@ -162,7 +125,7 @@ export default function AboutUs(){
                         <div className="d-flex">
                             <FiHelpCircle className="fea icon-ex-md text-primary me-2 mt-1"/>
                             <div className="flex-1">
-                                <h5 className="mt-0"> Is <span className="text-primary">Jobnova</span> safer to use with my account ?</h5>
+                                <h5 className="mt-0"> Is <span className="text-primary">Workwise</span> safer to use with my account ?</h5>
                                 <p className="answer text-muted mb-0">The most well-known dummy text is the 'Lorem Ipsum', which is said to have originated in the 16th century. Lorem Ipsum is composed in a pseudo-Latin language which more or less corresponds to 'proper' Latin.</p>
                             </div>
                         </div>
@@ -173,7 +136,7 @@ export default function AboutUs(){
                     <div className="col-12 text-center">
                         <div className="section-title">
                             <h4 className="title mb-4">Have Question ? Get in touch!</h4>
-                            <p className="text-muted para-desc mx-auto">Start working with <span className="text-primary fw-bold">Jobnova</span> that can provide everything you need to generate awareness, drive traffic, connect.</p>
+                            <p className="text-muted para-desc mx-auto">Start working with <span className="text-primary fw-bold">Workwise</span> that can provide everything you need to generate awareness, drive traffic, connect.</p>
                             <Link to="/contactus" className="btn btn-primary mt-3"><i className="uil uil-phone"></i> Contact us</Link>
                         </div>
                     </div>

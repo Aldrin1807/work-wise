@@ -22,7 +22,7 @@ export default function Error(){
                                 </div>
                             </div>
                             <div className="text-center">
-                                <p className="mb-0 text-muted">© {new Date().getFullYear()} Jobnova. Design with <i className="mdi mdi-heart text-danger"></i> by <Link to="https://shreethemes.in/" target="_blank" className="text-reset">Shreethemes</Link>.</p>
+                                <p className="mb-0 text-muted">© {new Date().getFullYear()} Workwise. Developed with <i className="mdi mdi-heart text-danger"></i>.</p>
                             </div>
                         </div>
                     </div>

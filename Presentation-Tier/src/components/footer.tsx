@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import logo from '../assets/images/logo-light.png'
 
-import {FiShoppingCart, FiDribbble, FiLinkedin, FiFacebook, FiInstagram, FiTwitter,FiBookmark} from '../assets/icons/vander'
+import {FiBookmark} from '../assets/icons/vander'
 
 export default function Footer({top}: {top: boolean}){
     return(
@@ -25,7 +25,7 @@ export default function Footer({top}: {top: boolean}){
 
                         <div className="col-md-5 mt-4 mt-sm-0">
                             <div className="text-md-end ms-5 ms-sm-0">
-                                <Link to="/job-apply" className="btn btn-primary me-1 my-1">Apply Now</Link>
+                                <Link to="/job-list" className="btn btn-primary me-1 my-1">See jobs</Link>
                                 <Link to="/contactus" className="btn btn-soft-primary my-1">Contact Us</Link>
                             </div>
                         </div>
@@ -45,11 +45,9 @@ export default function Footer({top}: {top: boolean}){
         
                                 <div className="col-sm-9 mt-4 mt-sm-0">
                                     <ul className="list-unstyled footer-list terms-service text-center text-sm-end mb-0">
-                                        <li className="list-inline-item my-2"><Link to="/index" className="text-foot fs-6 fw-medium me-2"><i className="mdi mdi-circle-small"></i> Home</Link></li>
-                                        <li className="list-inline-item my-2"><Link to="/services" className="text-foot fs-6 fw-medium me-2"><i className="mdi mdi-circle-small"></i> How it works</Link></li>
-                                        <li className="list-inline-item my-2"><Link to="/job-post" className="text-foot fs-6 fw-medium me-2"><i className="mdi mdi-circle-small"></i> Create a job</Link></li>
+                                        <li className="list-inline-item my-2"><Link to="/" className="text-foot fs-6 fw-medium me-2"><i className="mdi mdi-circle-small"></i> Home</Link></li>
                                         <li className="list-inline-item my-2"><Link to="/aboutus" className="text-foot fs-6 fw-medium me-2"><i className="mdi mdi-circle-small"></i> About us</Link></li>
-                                        <li className="list-inline-item my-2"><Link to="/pricing" className="text-foot fs-6 fw-medium"><i className="mdi mdi-circle-small"></i> Plans</Link></li>
+                                        <li className="list-inline-item my-2"><Link to="/privacy" className="text-foot fs-6 fw-medium me-2"><i className="mdi mdi-circle-small"></i> Privacy</Link></li>
                                     </ul>
                                 </div>
                             </div>
@@ -63,20 +61,11 @@ export default function Footer({top}: {top: boolean}){
                     <div className="row align-items-center">
                         <div className="col-sm-6">
                             <div className="text-sm-start">
-                                <p className="mb-0 fw-medium">© {new Date().getFullYear()} Jobnova. Design with <i className="mdi mdi-heart text-danger"></i> by <Link to="https://shreethemes.in/" target="_blank" className="text-reset">Shreethemes</Link>.</p>
+                                <p className="mb-0 fw-medium">© {new Date().getFullYear()} Workwise. Developed with <i className="mdi mdi-heart text-danger"></i>.</p>
                             </div>
                         </div>
 
-                        <div className="col-sm-6 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                            <ul className="list-unstyled social-icon foot-social-icon text-sm-end mb-0">
-                                <li className="list-inline-item"><Link to="https://1.envato.market/jobnova-react" target="_blank" className="rounded"><FiShoppingCart className="fea icon-sm align-middle"/></Link></li>
-                                <li className="list-inline-item"><Link to="https://dribbble.com/shreethemes" target="_blank" className="rounded"><FiDribbble className="fea icon-sm align-middle"/></Link></li>
-                                <li className="list-inline-item"><Link to="http://linkedin.com/company/shreethemes" target="_blank" className="rounded"><FiLinkedin className="fea icon-sm align-middle"/></Link></li>
-                                <li className="list-inline-item"><Link to="https://www.facebook.com/shreethemes" target="_blank" className="rounded"><FiFacebook className="fea icon-sm align-middle"/></Link></li>
-                                <li className="list-inline-item"><Link to="https://www.instagram.com/shreethemes/" target="_blank" className="rounded"><FiInstagram className="fea icon-sm align-middle"/></Link></li>
-                                <li className="list-inline-item"><Link to="https://twitter.com/shreethemes" target="_blank" className="rounded"><FiTwitter className="fea icon-sm align-middle"/></Link></li>
-                            </ul>
-                        </div>
+                    
                     </div>
                 </div>
             </div>

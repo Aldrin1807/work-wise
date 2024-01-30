@@ -8,7 +8,6 @@ import about2 from '../assets/images/about/ab02.jpg'
 import { accordionData } from '../data/data';
 
 export default function Faq(){
-    let [isOpen, setOpen] = useState(false);
     let [activeIndex,setActiveIndex] = useState(0)
     return(
         <div className="row g-4 align-items-center">
@@ -20,12 +19,6 @@ export default function Faq(){
 
                     <div className="img-two shadow rounded p-2 bg-white">
                         <img src={about2} className="img-fluid rounded" alt=""/>
-
-                        <div className="position-absolute top-0 start-50 translate-middle">
-                            <Link to="#!" onClick={() => setOpen(true)} className="avatar avatar-md-md rounded-pill shadow card d-flex justify-content-center align-items-center lightbox">
-                                <i className="mdi mdi-play mdi-24px text-primary"></i>
-                            </Link>
-                        </div>
                     </div>
                 </div>
             </div>
