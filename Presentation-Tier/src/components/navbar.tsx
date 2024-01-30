@@ -3,16 +3,17 @@ import { Link, useLocation } from 'react-router-dom'
 import logoDark from "../assets/images/logo-dark.png"
 import logoWhite from "../assets/images/logo-white.png"
 import logoLight from "../assets/images/logo-light.png"
-import { FaEllipsisH, FaEnvelope, FaEnvelopeOpen, FaRegBell } from "react-icons/fa";
+import { FaEnvelope, FaEnvelopeOpen, FaRegBell } from "react-icons/fa";
 import { FiUser,  FiLogOut } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { deleteNotification, fetchNotifications, fetchUser, updateNotificationStatus, updateStatuses } from "../api/user-api";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../redux/userSlice";
 import { FaCheck } from "react-icons/fa6";
-import { Button, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap";
 import swal from "sweetalert";
 import { fetchEmployer } from "../api/employer-api";
+import { LuBellDot } from "react-icons/lu";
 
 export default function Navbar({navClass, navLight}: {navClass: string, navLight: boolean}){
     const dispatch = useDispatch();
@@ -173,7 +174,12 @@ export default function Navbar({navClass, navLight}: {navClass: string, navLight
                                 className="dropdown-toggle btn btn-sm btn-icon btn-pills btn-primary"
                                 onClick={toggleNotificationDropdown}
                             >
-                                <FaRegBell className="icons" />
+                                {notifications.some((notification: any) => notification.status === 'Unread') ? (
+                                    <LuBellDot className="icons" />
+                                    )                       
+                                    :(
+                                    <FaRegBell className="icons" />
+                                     )}
                             </button>
 
                             <div
